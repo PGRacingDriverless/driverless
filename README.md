@@ -38,9 +38,10 @@ You can customize the options and arguments you need. Tables of some of the opti
 
 | Argument | Interpretation |
 | ------ | ------ |
+| ```--rm``` | Automatically clean up the container when the container exits. Also removes the associated anonymous volumes. |
 | ```--device-cgroup-rule='c *:* rmw'``` | Add a rule to the cgroup allowed devices list. |
 | ```--env=DISPLAY``` | Sets the current display. |
-| ```--gpus=all``` | Аccess to all GPU resources for the container. [Nvidia-container-runtime](https://docs.docker.com/config/containers/resource_constraints/#install-nvidia-container-runtime) is required. |
+| ```--gpus=all``` | Аccess to all GPU resources for the container. [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit) or [Nvidia Container Runtime](https://docs.docker.com/config/containers/resource_constraints/#install-nvidia-container-runtime) (deprecated) is required. |
 | ```--ipc=host``` | Inter-process communication (higher performance for complex computations). |
 | ```--name=<your_name>``` | Sets the container name. |
 | ```--network=host``` | Networking using the host network. |
