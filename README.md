@@ -1,6 +1,8 @@
 # PGRacing Driverless Main Repo
 This is the starting and main repository of the driverless project.
 
+Code style: https://github.com/PGRacingDriverless/driverless/edit/master/README.md
+
 ### How to get started?
 Clone or download the repository:
 ```
