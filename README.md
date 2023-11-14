@@ -60,7 +60,7 @@ You can run an application on the GPU in a container (if the necessary [options]
 __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <app_to_execute>
 ```
 ## Robot Operating System
-Everything needed has been added to the Dockerfile, so ROS2 (Humble versions) will already be installed in the built Docker image.
+Everything needed has been added to the Dockerfile, so ROS2 (Humble version) will already be installed in the built Docker image.
 ### Materials
 [Docs](https://docs.ros.org/en/humble/index.html)
 
