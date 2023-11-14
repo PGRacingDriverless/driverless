@@ -2,19 +2,24 @@ PGRacing Driverless Main Repo
 =============================
 This is the starting and main repository of the driverless project.
 - [Getting started](#Getting-started)
-    - [Build Docker container](#Build-Docker-container)
-    - [Run Docker container](#Run-Docker-container)
-    - [Interacting with an existing Docker container from another console window](#Interacting-with-an-existing-Docker-container-from-another-console-window)
-    - [Running applications on GPU in a Docker container](#Running-applications-on-GPU-in-a-Docker-container)
-- [Options](#Options)
-- [Devices](#Devices)
+    - [Docker](#Docker)
+        - [Build Docker container](#Build-Docker-container)
+        - [Run Docker container](#Run-Docker-container)
+        - [Interacting with an existing Docker container from another console window](#Interacting-with-an-existing-Docker-container-from-another-console-window)
+        - [Running applications on GPU in a Docker container](#Running-applications-on-GPU-in-a-Docker-container)
+    - [Robot Operating System](#Robot-Operating-System)
+        - [Materials](#Materials)
+- [More about Docker](#More-about-Docker)
+    - [Docker run options](#Docker-run-options)
+    - [Devices in Docker](#Devices-in-Docker)
 - [Troubleshooting](#Troubleshooting)
     - [Run Linux GUI apps on the Windows Subsystem for Linux](#Run-Linux-GUI-apps-on-the-Windows-Subsystem-for-Linux)
     - [Authorization problem for GUI apps](#Authorization-problem-for-GUI-apps)
 - [License](#License)
 
 # Getting started
-## Build Docker container
+## Docker
+### Build Docker container
 Clone or download the repository:
 ```
 git clone https://github.com/PGRacingDriverless/driverless.git
@@ -24,7 +29,7 @@ Use the Dockerfile to build the image:
 cd driverless
 docker image build -t ros2_pgr_dv .
 ```
-## Run Docker container
+### Run Docker container
 Run the Docker container from the image:
 ```
 docker run -it --rm \
@@ -38,9 +43,9 @@ docker run -it --rm \
     --user=ros \
     ros2_pgr_dv
 ```
-You can customize the options you need. [Here](#Options) is a table of some of the options useful within this project.  
+You can customize the options you need. [Here](#Docker-run-options) is a table of some of the options useful within this project.  
 If you are a Windows user, it will be helpful to refer to the [troubleshooting](#Troubleshooting) section.
-## Interacting with an existing Docker container from another console window
+### Interacting with an existing Docker container from another console window
 To execute a command in an existing container:
 ```
 docker exec -it pgr_dv <command>
@@ -49,13 +54,18 @@ A new bash console for an existing container:
 ```
 docker exec -it pgr_dv bash
 ```
-## Running applications on GPU in a Docker container
+### Running applications on GPU in a Docker container
 You can run an application on the GPU in a container (if the necessary [options](#Options) are set) by executing the following command:
 ```
 __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <app_to_execute>
 ```
+## Robot Operating System
+Everything needed has been added to the Dockerfile, so ROS2 (Humble versions) will already be installed in the built Docker image.
+### Materials
+[Docs](https://docs.ros.org/en/humble/index.html)
 
-# Options
+# More about Docker
+## Docker run options
 | Option | Interpretation |
 | ------ | ------ |
 | ```-p 8080:80``` | Map port 8080 on the Docker host to TCP port 80 in the container. |
@@ -70,8 +80,7 @@ __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <app_to_execute>
 | ```--name=<your_name>``` | Sets the container name. |
 | ```--network=host``` | Networking using the host network. |
 | ```--user=ros``` | Run under the ros user (for dev purposes). Otherwise will run under root. |
-
-# Devices
+## Devices in Docker
 Common case for all devices:
 ```
 docker run -it \
