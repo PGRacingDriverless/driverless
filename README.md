@@ -55,7 +55,7 @@ A new bash console for an existing container:
 docker exec -it pgr_dv bash
 ```
 ### Running applications on GPU in a Docker container
-You can run an application on the GPU in a container (if the necessary [options](#Options) are set) by executing the following command:
+You can run an application on the GPU in a container (if the necessary [options](#Docker-run-options) are set) by executing the following command:
 ```
 __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <app_to_execute>
 ```
