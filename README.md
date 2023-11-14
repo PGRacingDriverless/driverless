@@ -38,7 +38,7 @@ docker run -it --rm \
     --user=ros \
     ros2_pgr_dv
 ```
-You can customize the options you need. [Here](#Options) is a table of some of the options useful within this project.
+You can customize the options you need. [Here](#Options) is a table of some of the options useful within this project.  
 If you are a Windows user, it will be helpful to refer to the [troubleshooting](#Troubleshooting) section.
 ## Interacting with an existing Docker container from another console window
 To execute a command in an existing container:
@@ -117,9 +117,9 @@ docker run -it \
 1. The container host (i.e. docker-desktop-data WSL2 distribution) does not have a ```/tmp/.X11-unix``` itself. This folder is actually found in the ```/mnt/host/wslg/.X11-unix``` folder on the docker-desktop distribution which translates to ```/run/desktop/mnt/host/wslg/.X11-unix``` when running containers.
 2. There are no baked-in environment variables to assist you, so you need to specify the environment variables explicitly with these folders in mind.
 ### Solution
-[Run Linux GUI apps on the Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps)
-[Containerizing GUI applications with WSLg](https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md)
-[How to show GUI apps from docker desktop container on windows 11](https://stackoverflow.com/questions/73092750/how-to-show-gui-apps-from-docker-desktop-container-on-windows-11)
+[Run Linux GUI apps on the Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps)  
+[Containerizing GUI applications with WSLg](https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md)  
+[How to show GUI apps from docker desktop container on windows 11](https://stackoverflow.com/questions/73092750/how-to-show-gui-apps-from-docker-desktop-container-on-windows-11)  
 ## Authorization problem for GUI apps
 ### Error
 All the necessary options for GUI are set, but the following error appears when running GUI applications:
