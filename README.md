@@ -121,7 +121,7 @@ docker run -it \
 # Troubleshooting
 ## Run GUI apps in Docker on the Windows Subsystem for Linux
 ### Error
-The following message is displayed when trying to run GUI applications in Docker on Windows with WSL2:
+The following message is displayed when trying to run a GUI application in a Docker container on a Windows platform with WSL2:
 ```
 Unable to init server: Could not connect: Connection refused
 Gtk-WARNING **: HH:MM:SS.ccc: cannot open display
@@ -141,9 +141,8 @@ docker run -it \
     -e PULSE_SERVER=/mnt/wslg/PulseServer \
     ros2_pgr_dv
 ```
-In case of difficulties:
-[Containerizing GUI applications with WSLg](https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md)  
-[How to show GUI apps from docker desktop container on windows 11](https://stackoverflow.com/questions/73092750/how-to-show-gui-apps-from-docker-desktop-container-on-windows-11)  
+In case of difficulties, please read the official ["Containerizing GUI applications with WSLg"](https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md) guide.  
+The topic on StackOverflow ["How to show GUI apps from docker desktop container on windows 11"](https://stackoverflow.com/questions/73092750/how-to-show-gui-apps-from-docker-desktop-container-on-windows-11) may be helpful.
 ## Authorization problem for GUI apps
 ### Error
 All the necessary options for GUI are set, but the following error appears when running GUI applications:
