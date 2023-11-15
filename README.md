@@ -13,7 +13,7 @@ This is the starting and main repository of the driverless project.
     - [Docker run options](#Docker-run-options)
     - [Devices in Docker](#Devices-in-Docker)
 - [Troubleshooting](#Troubleshooting)
-    - [Run Linux GUI apps on the Windows Subsystem for Linux](#Run-Linux-GUI-apps-on-the-Windows-Subsystem-for-Linux)
+    - [Run GUI apps in Docker on the Windows Subsystem for Linux](#Run-GUI-apps-in-Docker-on-the-Windows-Subsystem-for-Linux)
     - [Authorization problem for GUI apps](#Authorization-problem-for-GUI-apps)
 - [License](#License)
 
@@ -119,14 +119,29 @@ docker run -it \
     ros2_pgr_dv
 ```
 # Troubleshooting
-## Run Linux GUI apps on the Windows Subsystem for Linux
+## Run GUI apps in Docker on the Windows Subsystem for Linux
 ### Error
-...
+The following message is displayed when trying to run GUI applications in Docker on Windows with WSL2:
+```
+Unable to init server: Could not connect: Connection refused
+Gtk-WARNING **: HH:MM:SS.ccc: cannot open display
+```
 ### Problem
-1. The container host (i.e. docker-desktop-data WSL2 distribution) does not have a ```/tmp/.X11-unix``` itself. This folder is actually found in the ```/mnt/host/wslg/.X11-unix``` folder on the docker-desktop distribution which translates to ```/run/desktop/mnt/host/wslg/.X11-unix``` when running containers.
-2. There are no baked-in environment variables to assist you, so you need to specify the environment variables explicitly with these folders in mind.
+1. The container host (WSL2) does not have the ```/tmp/.X11-unix``` folder. This folder is actually in the ```/mnt/wslg/.X11-unix```.
+2. There are no built-in environment variables, so you need to specify environment variables explicitly with these folders in mind.
 ### Solution
-[Run Linux GUI apps on the Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps)  
+Run with the options:
+```
+docker run -it \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    -v /mnt/wslg:/mnt/wslg \
+    -e DISPLAY=:0 \
+    -e WAYLAND_DISPLAY=wayland-0 \
+    -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir \
+    -e PULSE_SERVER=/mnt/wslg/PulseServer \
+    ros2_pgr_dv
+```
+In case of difficulties:
 [Containerizing GUI applications with WSLg](https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md)  
 [How to show GUI apps from docker desktop container on windows 11](https://stackoverflow.com/questions/73092750/how-to-show-gui-apps-from-docker-desktop-container-on-windows-11)  
 ## Authorization problem for GUI apps
