@@ -4,6 +4,10 @@ This is the starting and main repository of the driverless project.
 - [Getting started](#Getting-started)
     - [Docker](#Docker)
         - [Build Docker container](#Build-Docker-container)
+        - [Extra steps for Windows users](#Extra-steps-for-Windows-users)
+            - [Install wsl](#Install-wsl)
+            - [Install and config Docker Desktop](#Install-and-config-Docker-Desktop)
+            - [Run Docker container (WSL)](Run-Docker-container-(WSL)) 
         - [Run Docker container](#Run-Docker-container)
         - [Interacting with an existing Docker container from another console window](#Interacting-with-an-existing-Docker-container-from-another-console-window)
         - [Running applications on GPU in a Docker container](#Running-applications-on-GPU-in-a-Docker-container)
@@ -29,6 +33,62 @@ Use the Dockerfile to build the image:
 cd driverless
 docker image build -t ros2_pgr_dv .
 ```
+### Extra steps for Windows users
+If you are Linux user go to [Run Docker container](#Run-Docker-container)
+##
+### Install wsl
+
+Every command should be executed in powershell with elevated permissions (right click + run as administrator)
+
+Install wsl2:
+```
+wsl --install -d Ubuntu
+```
+Now you can enter wsl by:
+```
+Ubuntu
+```
+Or just seach for Ubuntu in search bar
+For more info check: https://github.com/microsoft/wslg
+
+### Install and config Docker Desktop
+
+1. Download and install the latest version of [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/).
+2. Follow the usual installation instructions to install Docker Desktop. Depending on which version of Windows you are using, Docker Desktop may prompt you to turn on WSL 2 during installation. Read the information displayed on the screen and turn on the WSL 2 feature to continue.
+3. Start Docker Desktop from the Windows Start menu.
+4. Navigate to Settings.
+5. From the General tab, select Use WSL 2 based engine..
+6. If you have installed Docker Desktop on a system that supports WSL 2, this option is turned on by default.
+7. Select Apply & Restart.
+8. Go to Settings > Resources > WSL Integration.
+9. Select "Enable integration with additional distros:" and choose distro you use (UBUNTU)
+10. Apply & restart
+11. Now docker commands work from Windows using the new WSL 2 engine.
+
+For more info check: https://docs.docker.com/desktop/wsl/.
+
+### Run Docker container (WSL)
+
+```
+docker run -it \
+    -v $PWD/ws:/home/ros/ws \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    -v /mnt/wslg:/mnt/wslg \
+    -e DISPLAY=:0 \
+    -e WAYLAND_DISPLAY=wayland-0 \
+    -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir \
+    -e PULSE_SERVER=/mnt/wslg/PulseServer \
+    ros2_pgr_dv
+```
+Or just run
+```
+sudo ./start_wsl.sh
+```
+Workspace is in /home/ros/ws
+
+For more info check: https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md.
+##
+
 ### Run Docker container
 Run the Docker container from the image:
 ```
@@ -133,6 +193,7 @@ Gtk-WARNING **: HH:MM:SS.ccc: cannot open display
 Run with the options:
 ```
 docker run -it \
+    -v $PWD/ws:/home/ros/ws \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v /mnt/wslg:/mnt/wslg \
     -e DISPLAY=:0 \
