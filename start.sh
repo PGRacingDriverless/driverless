@@ -5,7 +5,7 @@ docker_group_name=docker
 docker_run() {
     docker run -it \
 			--rm \
-			-v $PWD/ws:/home/ros/ws \
+			-v $PWD/../ws:/home/ros/ws \
 			-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 			--env=DISPLAY \
 			--gpus=all \
