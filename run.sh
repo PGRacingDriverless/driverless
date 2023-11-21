@@ -4,6 +4,10 @@ readonly DOCKER_GROUP_NAME=docker
 readonly DOCKER_IMAGE_NAME=ros2_pgr_dv
 readonly DOCKER_CONTAINER_NAME=pgr_dv
 
+timestamp() {
+	date +"%H:%M:%S"
+}
+
 readonly CLR_RED="\033[0;31m"
 readonly CLR_GREEN="\033[0;32m"
 readonly CLR_YELLOW="\033[0;33m"
@@ -13,11 +17,6 @@ readonly MSG_WITH_SUDO="[INFO] $(timestamp) User $USER is not added to the $DOCK
 readonly MSG_WITHOUT_SUDO="[INFO] $(timestamp) User $USER has been added to the $DOCKER_GROUP_NAME group. Running without sudo."
 readonly MSG_NOT_RUNNING="[INFO] $(timestamp) The container named $DOCKER_CONTAINER_NAME is not running. Launching it."
 readonly MSG_RUNNING="[INFO] $(timestamp) A container named $DOCKER_CONTAINER_NAME is already running. Running bash shell for it."
-
-
-timestamp() {
-	date +"%H:%M:%S"
-}
 
 container_run() {
     docker run -it \
