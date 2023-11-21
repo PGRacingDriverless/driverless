@@ -20,7 +20,7 @@ readonly MSG_NOT_RUNNING="[INFO] $(timestamp) The container named $DOCKER_CONTAI
 
 container_run() {
 	readonly MSG_NATIVE_LINUX="[INFO] `date +"%H:%M:%S"` WSL was not detected. Running as on native Linux."
-	readonly MSG_WSL_LINUX="[INFO] `date +"%H:%M:%S"` WSL distribution of Linux is detected. Run with parameters for Windows."
+	readonly MSG_WSL_LINUX="[INFO] `date +"%H:%M:%S"` WSL distribution of Linux is detected. Run with options for Windows."
 
 	if grep -qi microsoft /proc/version; then
 		echo $MSG_WSL_LINUX
