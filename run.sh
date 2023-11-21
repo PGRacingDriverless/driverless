@@ -19,6 +19,7 @@ readonly MSG_NOT_RUNNING="[INFO] $(timestamp) The container named $DOCKER_CONTAI
 readonly MSG_RUNNING="[INFO] $(timestamp) A container named $DOCKER_CONTAINER_NAME is already running. Running bash shell for it."
 
 container_run() {
+	echo $DOCKER_IMAGE_NAME
     docker run -it \
 			--rm \
 			-v $PWD/../ws:/home/ros/ws \
@@ -26,14 +27,14 @@ container_run() {
 			--env=DISPLAY \
 			--gpus=all \
 			--ipc=host \
-			--name=pgr_dv \
+			--name=$1 \
 			--network=host \
 			--user=ros \
-		ros2_pgr_dv
+		$2
 }
 
 container_exec_bash() {
-	docker exec -it pgr_dv bash
+	docker exec -it $1 bash
 }
 
 if groups "$USER" | grep -qw "$DOCKER_GROUP_NAME"; then
@@ -41,19 +42,19 @@ if groups "$USER" | grep -qw "$DOCKER_GROUP_NAME"; then
 	
 	if [ "$(docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ]; then
 		echo $MSG_RUNNING
-		container_exec_bash
+		container_exec_bash $DOCKER_CONTAINER_NAME
 	else
 		echo $MSG_NOT_RUNNING
-		container_run
+		container_run $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME
 	fi
 else
 	echo $MSG_WITH_SUDO
 
 	if [ "$(sudo docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ]; then
 		echo $MSG_RUNNING
-		sudo bash -c "$(declare -f container_exec_bash); container_exec_bash"
+		sudo bash -c "$(declare -f container_exec_bash); container_exec_bash $DOCKER_CONTAINER_NAME"
 	else
 		echo $MSG_NOT_RUNNING
-		sudo bash -c "$(declare -f container_run); container_run"
+		sudo bash -c "$(declare -f container_run); container_run $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME"
 	fi
 fi
