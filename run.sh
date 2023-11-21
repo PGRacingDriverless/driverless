@@ -32,7 +32,7 @@ then
 	"User $USER has been added to the $DOCKER_GROUP_NAME group."\
 	"Running without sudo."
 	
-	if [ "$(sudo docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ];
+	if [ "$(docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ];
 	then
 		echo "[INFO]: $(timestamp)"\
 		"A container named $DOCKER_CONTAINER_NAME is already running."\
