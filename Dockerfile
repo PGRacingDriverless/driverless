@@ -37,6 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    pciutils \
+    vulkan-tools \
+    mesa-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS2
@@ -76,6 +79,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ros-dev-tools \
   ros-humble-ament-* \
   vim \
+  ros-humble-pointcloud-to-laserscan \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
