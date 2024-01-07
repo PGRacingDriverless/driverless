@@ -82,7 +82,7 @@ docker run -it \
 ```
 Or just run
 ```
-sudo ./start_wsl.sh
+sudo ./run.sh
 ```
 Workspace is in /home/ros/ws
 
