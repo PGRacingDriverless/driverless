@@ -1,29 +1,54 @@
 #!/bin/bash
 
-readonly DOCKER_GROUP_NAME=docker
-readonly DOCKER_IMAGE_NAME=ros2_pgr_dv
-readonly DOCKER_CONTAINER_NAME=pgr_dv
+readonly DOCKER_GROUP=docker
+readonly DOCKER_IMAGE=ros2_pgr_dv
+readonly DOCKER_CONTAINER=pgr_dv
 
-timestamp() {
-	date +"%H:%M:%S"
+readonly CLR_RESET="\033[0m"
+readonly CLR_RED="\033[0;31m"
+
+readonly MSG_INACTIVE_DOCKER_DAEMON="${CLR_RED}[ERROR]${CLR_RESET} The docker daemon is not running. Start it using 'sudo systemctl start docker'."
+readonly MSG_USER_NOT_IN_GROUP="${CLR_RED}[ERROR]${CLR_RESET} User $USER is not added to the $DOCKER_GROUP group. Add $USER to the $DOCKER_GROUP group or run the script with sudo."
+readonly MSG_CONTAINER_RUNNING="[INFO] A container named $DOCKER_CONTAINER is already running. Running bash shell for it."
+readonly MSG_CONTAINER_NOT_RUNNING="[INFO] The container named $DOCKER_CONTAINER is not running. Launching it."
+readonly MSG_NATIVE_LINUX="[INFO] WSL was not detected. Running as on native Linux."
+readonly MSG_WSL="[INFO] WSL distribution of Linux is detected. Run with options for Windows."
+
+is_run_with_sudo() {
+	[ "$(id -u)" -eq 0 ]
 }
 
-readonly CLR_RED="\033[0;31m"
-readonly CLR_GREEN="\033[0;32m"
-readonly CLR_YELLOW="\033[0;33m"
-readonly CLR_END="\033[0m"
+# Returns 0 if WSL is detected and 1 otherwise
+# Methods:
+# 1. Default kernel name in WSL contains the string "Microsoft" (or "microsoft")
+# 2. Check for the automatically injected environment variable $WSL_DISTRO_NAME
+is_wsl() {
+	if is_run_with_sudo; then
+	    [ $(grep -qi microsoft /proc/version) ]
+	else
+		[ $(grep -qi microsoft /proc/version) ] || [ -n "${WSL_DISTRO_NAME}" ]
+	fi
+}
 
-readonly MSG_WITH_SUDO="[INFO] $(timestamp) User $USER is not added to the $DOCKER_GROUP_NAME group. Running with sudo."
-readonly MSG_WITHOUT_SUDO="[INFO] $(timestamp) User $USER has been added to the $DOCKER_GROUP_NAME group. Running without sudo."
-readonly MSG_RUNNING="[INFO] $(timestamp) A container named $DOCKER_CONTAINER_NAME is already running. Running bash shell for it."
-readonly MSG_NOT_RUNNING="[INFO] $(timestamp) The container named $DOCKER_CONTAINER_NAME is not running. Launching it."
+# Takes the daemon name as an argument
+is_daemon_running() {
+	systemctl is-active --quiet $1
+}
+
+# Takes the user name and the group name as arguments
+is_user_in_group() {
+	groups "$1" | grep -qw "$2"
+}
+
+# Takes the name of the container as an argument
+# Returns container id if running
+is_container_running() {
+    docker ps -aq -f status=running -f name=$1
+}
 
 container_run() {
-	readonly MSG_NATIVE_LINUX="[INFO] `date +"%H:%M:%S"` WSL was not detected. Running as on native Linux."
-	readonly MSG_WSL_LINUX="[INFO] `date +"%H:%M:%S"` WSL distribution of Linux is detected. Run with options for Windows."
-
-	if grep -qi microsoft /proc/version; then
-		echo $MSG_WSL_LINUX
+    if is_wsl; then
+        echo $MSG_WSL
 		docker run -it \
 			--rm \
 			-v $PWD/../ws:/home/ros/ws \
@@ -39,8 +64,8 @@ container_run() {
 			--network=host \
 			--user=ros \
 		$2
-	else
-		echo $MSG_NATIVE_LINUX
+    else
+        echo $MSG_NATIVE_LINUX
 		docker run -it \
 			--rm \
 			-v $PWD/../ws:/home/ros/ws \
@@ -52,31 +77,25 @@ container_run() {
 			--network=host \
 			--user=ros \
 		$2
-	fi
+    fi
 }
 
 container_exec_bash() {
 	docker exec -it $1 bash
 }
 
-if groups "$USER" | grep -qw "$DOCKER_GROUP_NAME"; then
-	echo $MSG_WITHOUT_SUDO
-	
-	if [ "$(docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ]; then
-		echo $MSG_RUNNING
-		container_exec_bash $DOCKER_CONTAINER_NAME
+if is_daemon_running docker; then
+	if is_user_in_group $USER $DOCKER_GROUP || is_run_with_sudo; then
+		if [ $(is_container_running $DOCKER_CONTAINER) ]; then
+			echo $MSG_CONTAINER_RUNNING
+			container_exec_bash $DOCKER_CONTAINER
+		else
+			echo $MSG_CONTAINER_NOT_RUNNING
+			container_run $DOCKER_CONTAINER $DOCKER_IMAGE
+		fi
 	else
-		echo $MSG_NOT_RUNNING
-		container_run $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME
+		echo -e $MSG_USER_NOT_IN_GROUP
 	fi
 else
-	echo $MSG_WITH_SUDO
-
-	if [ "$(sudo docker ps -aq -f status=running -f name=$DOCKER_CONTAINER_NAME)" ]; then
-		echo $MSG_RUNNING
-		sudo bash -c "$(declare -f container_exec_bash); container_exec_bash $DOCKER_CONTAINER_NAME"
-	else
-		echo $MSG_NOT_RUNNING
-		sudo bash -c "$(declare -f container_run); container_run $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME"
-	fi
+	echo -e $MSG_INACTIVE_DOCKER_DAEMON
 fi
