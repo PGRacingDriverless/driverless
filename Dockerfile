@@ -37,6 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    # added
     pciutils \
     vulkan-tools \
     mesa-utils \
@@ -79,10 +80,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ros-dev-tools \
   ros-humble-ament-* \
   vim \
-  ros-humble-pointcloud-to-laserscan \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
+
+# Install rosdeps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-pcl-ros \
+    ros-humble-cartographer-ros \
+    ros-humble-hls-lfcd-lds-driver \
+    ros-humble-nav2-bringup \
+    ros-humble-gtsam
 
 ARG USERNAME=ros
 ARG USER_UID=1000
