@@ -7,7 +7,7 @@ readonly DOCKER_CONTAINER=pgr_dv
 readonly CLR_RESET="\033[0m"
 readonly CLR_RED="\033[0;31m"
 
-readonly MSG_INACTIVE_DOCKER_DAEMON="${CLR_RED}[ERROR]${CLR_RESET} The docker daemon is not running. Start it using 'sudo systemctl start docker'."
+readonly MSG_INACTIVE_DOCKER_DAEMON="${CLR_RED}[ERROR]${CLR_RESET} The docker daemon is not running."
 readonly MSG_USER_NOT_IN_GROUP="${CLR_RED}[ERROR]${CLR_RESET} User $USER is not added to the $DOCKER_GROUP group. Add $USER to the $DOCKER_GROUP group or run the script with sudo."
 readonly MSG_CONTAINER_RUNNING="[INFO] A container named $DOCKER_CONTAINER is already running. Running bash shell for it."
 readonly MSG_CONTAINER_NOT_RUNNING="[INFO] The container named $DOCKER_CONTAINER is not running. Launching it."
@@ -30,7 +30,6 @@ is_wsl() {
     fi
 }
 
-# Takes the daemon name as an argument
 is_daemon_running() {
     docker info > /dev/null 2>&1
 }
@@ -46,6 +45,7 @@ is_container_running() {
     docker ps -aq -f status=running -f name=$1
 }
 
+# TODO: Need to fix shared folder path. Using $PWD is a bad solution.
 container_run() {
     if is_wsl; then
         echo $MSG_WSL
@@ -84,8 +84,8 @@ container_exec_bash() {
 	docker exec -it $1 bash
 }
 
-if is_daemon_running docker; then
-	if is_user_in_group $USER $DOCKER_GROUP || is_run_with_sudo; then
+if is_user_in_group $USER $DOCKER_GROUP || is_run_with_sudo; then
+	if is_daemon_running; then
 		if [ $(is_container_running $DOCKER_CONTAINER) ]; then
 			echo $MSG_CONTAINER_RUNNING
 			container_exec_bash $DOCKER_CONTAINER
@@ -94,8 +94,8 @@ if is_daemon_running docker; then
 			container_run $DOCKER_CONTAINER $DOCKER_IMAGE
 		fi
 	else
-		echo -e $MSG_USER_NOT_IN_GROUP
+		echo -e $MSG_INACTIVE_DOCKER_DAEMON
 	fi
 else
-	echo -e $MSG_INACTIVE_DOCKER_DAEMON
+	echo -e $MSG_USER_NOT_IN_GROUP
 fi

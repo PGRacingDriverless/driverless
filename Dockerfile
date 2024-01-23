@@ -110,7 +110,18 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN apt-get update && apt-get install -y git-core bash-completion \
   && echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc \
   && echo "if [ -f /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash ]; then source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash; fi" >> /home/$USERNAME/.bashrc \
-  && rm -rf /var/lib/apt/lists/* 
+  && echo "if [ -f /usr/share/gazebo/setup.bash ]; then source /usr/share/gazebo/setup.bash; fi" >> /home/$USERNAME/.bashrc \
+  # and aliases
+  && echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias cb="colcon build --symlink-install"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias cbr="colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias rr="ros2 run"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias rl="ros2 launch"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias ru="rosdep update"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias ri="rosdep install --from-paths src --ignore-src -r -y"' >> /home/$USERNAME/.bashrc \
+  && echo 'alias gpu="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"' >> /home/$USERNAME/.bashrc \
+  #
+  && rm -rf /var/lib/apt/lists/*
 
 ENV DEBIAN_FRONTEND=
 ENV AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1
