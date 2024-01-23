@@ -23,16 +23,16 @@ is_run_with_sudo() {
 # 1. Default kernel name in WSL contains the string "Microsoft" (or "microsoft")
 # 2. Check for the automatically injected environment variable $WSL_DISTRO_NAME
 is_wsl() {
-	if is_run_with_sudo; then
-	    [ $(grep -qi microsoft /proc/version) ]
-	else
-		[ $(grep -qi microsoft /proc/version) ] || [ -n "${WSL_DISTRO_NAME}" ]
-	fi
+    if is_run_with_sudo; then
+        grep -qi microsoft /proc/version
+    else
+        grep -qi microsoft /proc/version || [ -n "${WSL_DISTRO_NAME}" ]
+    fi
 }
 
 # Takes the daemon name as an argument
 is_daemon_running() {
-	systemctl is-active --quiet $1
+    docker info > /dev/null 2>&1
 }
 
 # Takes the user name and the group name as arguments
