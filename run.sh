@@ -76,6 +76,8 @@ container_run() {
 			--name=$1 \
 			--network=host \
 			--user=ros \
+                        --privileged -v /dev/video*:/dev/video* \
+			-v /dev:/dev \
 		$2
     fi
 }
