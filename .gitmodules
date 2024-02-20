@@ -1,0 +1,12 @@
+[submodule "src/slam"]
+	path = src/slam
+	url = git@github.com:PGRacingDriverless/slam.git
+[submodule "src/control"]
+	path = src/control
+	url = git@github.com:PGRacingDriverless/control.git
+[submodule "src/camera"]
+	path = src/camera
+	url = git@github.com:PGRacingDriverless/camera.git
+[submodule "src/pathplanner"]
+	path = src/pathplanner
+	url = git@github.com:PGRacingDriverless/pathplanner.git

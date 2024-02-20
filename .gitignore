@@ -1,1 +1,3 @@
-ws/
+build/*
+install/*
+log/*

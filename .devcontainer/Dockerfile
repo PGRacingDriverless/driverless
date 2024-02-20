@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pciutils \
     vulkan-tools \
     mesa-utils \
+    clang \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS2
@@ -49,8 +50,6 @@ RUN sudo add-apt-repository universe \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null \
   && apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-ros-base \
-    ros-humble-librealsense2* \
-    ros-humble-realsense2-* \
     python3-argcomplete \
   && rm -rf /var/lib/apt/lists/*
 
@@ -177,3 +176,27 @@ RUN apt-get update \
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 ENV QT_X11_NO_MITSHM 1
+
+###########################################
+#  OpenCV
+###########################################
+ARG OPENCV=false
+FROM gazebo-nvidia AS opencv
+
+RUN if [ "$OPENCV" = "true" ]; then \
+  apt-get update && apt-get install -y \
+  unzip build-essential libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev \
+  python3-dev python3-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libdc1394-dev \
+  libcanberra-gtk-module libcanberra-gtk3-module ros-humble-cv-bridge ros-humble-vision-opencv \
+  && rm -rf /var/lib/apt/lists/* \
+  ; fi
+
+RUN if [ "$OPENCV" = "true" ]; then \
+  wget -O opencv.zip https://github.com/opencv/opencv/archive/4.9.0.zip \
+  && wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.9.0.zip \
+  && unzip opencv.zip \
+  && unzip opencv_contrib.zip \
+  && mkdir -p build && cd build \
+  && cmake -DOPENCV_EXTRA_MODULES_PATH=../opencv_contrib-4.9.0/modules ../opencv-4.9.0 \
+  && cmake --build . \
+  ; fi

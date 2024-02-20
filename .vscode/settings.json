@@ -1,0 +1,31 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/ros/ws/build/turtlebot3_teleop",
+        "/home/ws/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/ros/ws/build/turtlebot3_example",
+        "/home/ws/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/ros/ws/build/turtlebot3_teleop",
+        "/home/ws/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/ros/ws/build/turtlebot3_example",
+        "/home/ws/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages"
+    ],
+    "cmake.configureOnOpen": true,
+    "files.exclude":{
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "/home/ros/ws/build/**": true
+    },
+    "files.associations": {
+        "chrono": "cpp"
+    }
+}
