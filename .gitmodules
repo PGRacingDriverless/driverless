@@ -10,3 +10,6 @@
 [submodule "src/pathplanner"]
 	path = src/pathplanner
 	url = git@github.com:PGRacingDriverless/pathplanner.git
+[submodule "src/assets"]
+	path = src/assets
+	url = git@github.com:PGRacingDriverless/assets.git
