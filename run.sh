@@ -45,13 +45,12 @@ is_container_running() {
     docker ps -aq -f status=running -f name=$1
 }
 
-# TODO: Need to fix shared folder path. Using $PWD is a bad solution.
 container_run() {
     if is_wsl; then
         echo $MSG_WSL
 		docker run -it \
 			--rm \
-			-v $PWD/../ws:/home/ros/ws \
+			-v ./ws:/home/ros/ws \
 			-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 			-v /mnt/wslg:/mnt/wslg \
 			-e DISPLAY=:0 \
@@ -68,7 +67,7 @@ container_run() {
         echo $MSG_NATIVE_LINUX
 		docker run -it \
 			--rm \
-			-v $PWD/../ws:/home/ros/ws \
+			-v ./ws:/home/ros/ws \
 			-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 			--env=DISPLAY \
 			--gpus=all \
@@ -76,7 +75,7 @@ container_run() {
 			--name=$1 \
 			--network=host \
 			--user=ros \
-                        --privileged -v /dev/video*:/dev/video* \
+        	--privileged -v /dev/video*:/dev/video* \
 			-v /dev:/dev \
 		$2
     fi

@@ -1,0 +1,16 @@
+<launch>
+  <arg name="camera_args" default="$(find-pkg-share camera)/config/camera.param.yaml"/>
+
+  <arg name="rviz_config" default="$(find-pkg-share camera)/rviz/config.rviz"/>
+  <arg name="rviz" default="true"/>
+
+  <include file="$(find-pkg-share realsense2_camera)/launch/rs_launch.py"/>
+
+  <group if="$(var rviz)">
+    <node pkg="rviz2" exec="rviz2" name="rviz2" args="-d $(var rviz_config)"/>
+  </group>
+
+  <node pkg="camera" exec="camera_node" name="camera_node" output="screen">
+    <param from="$(var camera_args)"/>
+  </node>
+</launch>

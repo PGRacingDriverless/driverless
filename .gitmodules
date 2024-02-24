@@ -1,15 +1,15 @@
-[submodule "src/slam"]
-	path = src/slam
+[submodule "ws/src/slam"]
+	path = ws/src/slam
 	url = git@github.com:PGRacingDriverless/slam.git
-[submodule "src/control"]
-	path = src/control
+[submodule "ws/src/control"]
+	path = ws/src/control
 	url = git@github.com:PGRacingDriverless/control.git
-[submodule "src/camera"]
-	path = src/camera
+[submodule "ws/src/camera"]
+	path = ws/src/camera
 	url = git@github.com:PGRacingDriverless/camera.git
-[submodule "src/pathplanner"]
-	path = src/pathplanner
+[submodule "ws/src/pathplanner"]
+	path = ws/src/pathplanner
 	url = git@github.com:PGRacingDriverless/pathplanner.git
-[submodule "src/assets"]
-	path = src/assets
+[submodule "ws/src/assets"]
+	path = ws/src/assets
 	url = git@github.com:PGRacingDriverless/assets.git

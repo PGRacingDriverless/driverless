@@ -1,0 +1,7 @@
+[submodule "Formula-Student-Driverless-Simulator"]
+	path = Formula-Student-Driverless-Simulator
+	url = https://github.com/PGRacingDriverless/Formula-Student-Driverless-Simulator.git
+[submodule "fs_msgs"]
+	path = fs_msgs
+	url = https://github.com/PGRacingDriverless/fs_msgs.git
+	branch = ros2
