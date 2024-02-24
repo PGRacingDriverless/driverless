@@ -22,13 +22,10 @@ git clone https://github.com/PGRacingDriverless/driverless.git
 ```
 Clone repository of your project:
 ```
-cd driverless/
-git submodule update --init src/<repo_name>
+cd driverless/ws/src
+git clone <your_repo>
 ```
-To install submodules of you project use:
-```
-git submodule update --init --recursive src/<repo_name>
-```
+
 ## Docker
 ### Build Docker container
 Use the Dockerfile to build the image:
