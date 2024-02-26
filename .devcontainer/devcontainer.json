@@ -2,7 +2,7 @@
     "name": "pgr_dv",
     "containerUser": "ros",
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "${localWorkspaceFolder}/Dockerfile"
     },
     "customizations": {
         "vscode": {
