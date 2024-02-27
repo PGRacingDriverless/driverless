@@ -67,6 +67,8 @@ container_run() {
         echo $MSG_NATIVE_LINUX
 		docker run -it \
 			--rm \
+			-v /dev:/dev \
+			-v /dev/video*:/dev/video* \
 			-v ./ws:/home/ros/ws \
 			-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 			--env=DISPLAY \
@@ -74,9 +76,8 @@ container_run() {
 			--ipc=host \
 			--name=$1 \
 			--network=host \
+			--privileged \
 			--user=ros \
-        	--privileged -v /dev/video*:/dev/video* \
-			-v /dev:/dev \
 		$2
     fi
 }

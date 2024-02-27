@@ -4,6 +4,7 @@
     "build": {
         "dockerfile": "${localWorkspaceFolder}/Dockerfile"
     },
+    "privileged": true,
     "customizations": {
         "vscode": {
             "extensions":[
@@ -26,6 +27,8 @@
     },
     "runArgs": [
         "-e", "DISPLAY=${env:DISPLAY}",
+        "-v", "/dev:/dev",
+		"-v", "/dev/video*:/dev/video*",
         "--gpus=all",
         "--ipc=host",
         "--name=pgr_dv",
@@ -33,7 +36,7 @@
         "--rm"
     ],
     "mounts": [
-       "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
         "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached"
     ],
     "postCreateCommand": "export TURTLEBOT3_MODEL=waffle && export GAZEBO_WORLD=turtlebot3_world"
