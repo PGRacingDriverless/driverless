@@ -206,3 +206,7 @@ RUN if [ "$OPENCV" = "true" ]; then \
     && cmake -DOPENCV_EXTRA_MODULES_PATH=../opencv_contrib-4.9.0/modules ../opencv-4.9.0 \
     && cmake --build . \
     ; fi
+
+RUN apt-get install -y -qq --no-install-recommends \
+    ros-humble-realsense2-camera \
+    
