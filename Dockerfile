@@ -208,5 +208,5 @@ RUN if [ "$OPENCV" = "true" ]; then \
     ; fi
 
 RUN apt-get install -y -qq --no-install-recommends \
-    ros-humble-realsense2-camera \
+    ros-humble-realsense2-camera
     
