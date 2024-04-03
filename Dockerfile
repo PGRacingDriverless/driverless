@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS2
@@ -70,7 +71,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mesa-utils \
     openssh-client \
     pciutils \
+    pkg-config \
     python3-argcomplete \
+    python3-dev \
+    python3-numpy \
     python3-pip \
     ros-dev-tools \
     ros-humble-ament-* \
@@ -85,8 +89,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-pcl-ros \
     ros-humble-cartographer-ros \
     ros-humble-hls-lfcd-lds-driver \
+    ros-humble-navigation2 \
     ros-humble-nav2-bringup \
-    ros-humble-gtsam
+    ros-humble-gtsam \
+    ros-humble-cv-bridge \
+    ros-humble-realsense2-camera \
+    ros-humble-vision-opencv
 
 ARG USERNAME=ros
 ARG USER_UID=1000
@@ -177,7 +185,7 @@ FROM gazebo-nvidia AS opencv
 
 RUN if [ "$OPENCV" = "true" ]; then \
     # Install dependencies
-    apt-get update && apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install -y -qq --no-install-recommends \
         libavcodec-dev \
         libavformat-dev \
         libcanberra-gtk-module \
@@ -190,12 +198,6 @@ RUN if [ "$OPENCV" = "true" ]; then \
         libtbb-dev \
         libtbb2 \
         libtiff-dev \
-        pkg-config \
-        python3-dev \
-        python3-numpy \
-        ros-humble-cv-bridge \
-        ros-humble-vision-opencv \
-        unzip \
     && rm -rf /var/lib/apt/lists/* \
     # Download, Unzip and Build OpenCV
     && wget -O opencv.zip https://github.com/opencv/opencv/archive/4.9.0.zip \
@@ -207,6 +209,3 @@ RUN if [ "$OPENCV" = "true" ]; then \
     && cmake --build . \
     ; fi
 
-RUN apt-get install -y -qq --no-install-recommends \
-    ros-humble-realsense2-camera
-    
