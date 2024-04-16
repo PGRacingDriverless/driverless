@@ -12,6 +12,14 @@ services:
         user: ros
         ipc: host
         network_mode: host
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: all
+                          capabilities:
+                            - gpu
         environment:
             - DISPLAY=$DISPLAY
         volumes:
@@ -30,6 +38,14 @@ services:
         container_name: fsds
         privileged: true
         network_mode: host
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: all
+                          capabilities:
+                            - gpu
         environment:
             - DISPLAY=$DISPLAY
             - QT_X11_NO_MITSHM=1
