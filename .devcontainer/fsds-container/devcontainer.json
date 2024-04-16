@@ -2,9 +2,8 @@
     "name": "fsds",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
     "service": "fsds",
-    "containerUser": "ros",
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/home/ros/ws",
+    "workspaceFolder": "/home/fsdssim_user",
     "customizations": {
         "vscode": {
             "extensions":[
