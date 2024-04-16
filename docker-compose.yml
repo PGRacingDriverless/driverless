@@ -1,32 +1,35 @@
 version: "2.4"
 services:
-    ros2_pgr_dv:
-        stdin_open: true
-        tty: true
+    driverless:
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
+        image: ros2_pgr_dv
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        container_name: pgr_dv
+        privileged: true
+        user: ros
+        ipc: host
+        network_mode: host
+        environment:
+            - DISPLAY=$DISPLAY
         volumes:
             - /dev:/dev
             - /dev/video*:/dev/video*
-            - ./ws:/home/ros/ws
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-        environment:
-            - DISPLAY
-        ipc: host
-        container_name: pgr_dv
-        network_mode: host
-        privileged: true
-        user: ros
-        image: ros2_pgr_dv
-        build:
-            dockerfile: Dockerfile
-
-
+            - ./ws:/home/ros/ws
+    #
     fsds:
-        build:
-            context: RoboticsII-FSDS/docker/
-            dockerfile: Dockerfile
         stdin_open: true
         tty: true
+        image: ros2_fsds
+        build:
+            context: ./fsds
+            dockerfile: ./Dockerfile
+        container_name: fsds
         privileged: true
+        network_mode: host
         environment:
             - DISPLAY=$DISPLAY
             - QT_X11_NO_MITSHM=1
@@ -35,6 +38,3 @@ services:
             - NVIDIA_DRIVER_CAPABILITIES=all
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-        network_mode: host
-        container_name: $1
-        image: fsds

@@ -1,7 +1,7 @@
 {
-    "name": "fsds",
+    "name": "driverless",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
-    "service": "fsds",
+    "service": "driverless",
     "containerUser": "ros",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/home/ros/ws",
