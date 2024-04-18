@@ -12,6 +12,7 @@ services:
         user: ros
         ipc: host
         network_mode: host
+        # --gpus all
         deploy:
             resources:
                 reservations:

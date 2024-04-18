@@ -2,6 +2,7 @@
     "name": "fsds",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
     "service": "fsds",
+    "containerUser": "fsdssim_user",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/home/fsdssim_user",
     "customizations": {
