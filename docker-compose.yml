@@ -1,18 +1,15 @@
-version: "2.4"
 services:
+    # Driverless main
     driverless:
-        stdin_open: true # docker run -i
-        tty: true        # docker run -t
-        image: ros2_pgr_dv
-        build:
-            context: .
-            dockerfile: ./Dockerfile
-        container_name: pgr_dv
+        build: .
+        image: pgr/dv
+        container_name: dv
+        stdin_open: true
+        tty: true
         privileged: true
-        user: ros
-        ipc: host
         network_mode: host
-        # --gpus all
+        ipc: host
+        user: ros
         deploy:
             resources:
                 reservations:
@@ -24,21 +21,20 @@ services:
         environment:
             - DISPLAY=$DISPLAY
         volumes:
+            - ./ws:/home/ros/ws
+            - /tmp/.X11-unix:/tmp/.X11-unix:rw
             - /dev:/dev
             - /dev/video*:/dev/video*
-            - /tmp/.X11-unix:/tmp/.X11-unix:rw
-            - ./ws:/home/ros/ws
-    #
+    # Formula Student Driverless Simulator
     fsds:
+        build: ./fsds
+        image: pgr/fsds
+        container_name: fsds
         stdin_open: true
         tty: true
-        image: ros2_fsds
-        build:
-            context: ./fsds
-            dockerfile: ./Dockerfile
-        container_name: fsds
         privileged: true
         network_mode: host
+        user: fsdssim_user
         deploy:
             resources:
                 reservations:
@@ -49,9 +45,5 @@ services:
                             - gpu
         environment:
             - DISPLAY=$DISPLAY
-            - QT_X11_NO_MITSHM=1
-            - NVIDIA_DISABLE_REQUIRE=1
-            - NVIDIA_VISIBLE_DEVICES=all
-            - NVIDIA_DRIVER_CAPABILITIES=all
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
