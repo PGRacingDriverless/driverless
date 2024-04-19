@@ -1,11 +1,8 @@
 # PGRacing Driverless Main Repo
-This is the starting and main repository of the driverless project.
-- [Getting started](#Getting-started)
-    - [Download](#Download) 
-    - [Build Docker container](#Build-Docker-container)
-    - [Run Docker container](#Run-Docker-container)
-- [Aliases](#Aliases)
-- [License](#License)
+
+## Requirements
+- Install [Docker Engine](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+- Install [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit) according to the following [guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 ## Getting started
 ### Download
@@ -49,8 +46,6 @@ If you need the OpenCV library in a container, use with argument:
 3. Press **Ctrl+Shift+P** and choose **Rebuild and Reopen in container**.
 
 ### Run Docker container
-> **IMPORTANT**  
-> To run GPU containers with Docker, install the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit) using the following [guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 Run the container with a script:
 ```bash
@@ -65,19 +60,6 @@ If the container is already running, the script will connect you to it.
 
 Now you will be in a container. To open a new terminal, use **Ctrl+Shift+`**.  
 To exit the container, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
-
-## Aliases
-The following aliases are defined inside the container:
-| Alias | Command |
-| ------ | ------ |
-| `ws` | `cd ~/ws` |
-| `cb` | `colcon build --symlink-install` |
-| `cbr` | `colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release` |
-| `rr` | `ros2 run` |
-| `rl` | `ros2 launch` |
-| `ru` | `rosdep update` |
-| `ri` | `rosdep install --from-paths src --ignore-src -r -y` |
-| `gpu` | `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia` |
 
 ## License
 This project is under an ISC license.

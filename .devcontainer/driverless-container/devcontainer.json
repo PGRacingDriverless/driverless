@@ -2,7 +2,6 @@
     "name": "driverless",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
     "service": "driverless",
-    "containerUser": "ros",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/home/ros/ws",
     "customizations": {
