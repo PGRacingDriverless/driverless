@@ -9,6 +9,7 @@ services:
         privileged: true
         network_mode: host
         ipc: host
+        pid: host
         user: ros
         deploy:
             resources:
@@ -20,6 +21,7 @@ services:
                             - gpu
         environment:
             - DISPLAY=$DISPLAY
+            - ROS_DOMAIN_ID=5
         volumes:
             - ./ws:/home/ros/ws
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
@@ -34,6 +36,8 @@ services:
         tty: true
         privileged: true
         network_mode: host
+        ipc: host
+        pid: host
         user: fsdssim_user
         deploy:
             resources:
@@ -45,5 +49,6 @@ services:
                             - gpu
         environment:
             - DISPLAY=$DISPLAY
+            - ROS_DOMAIN_ID=5
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
