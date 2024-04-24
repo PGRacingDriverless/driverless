@@ -1,9 +1,9 @@
 {
-    "name": "fsds",
+    "name": "camera",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
-    "service": "fsds",
+    "service": "camera",
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/home/ros/Formula-Student-Driverless-Simulator",
+    "workspaceFolder": "/home/ros/ws",
     "customizations": {
         "vscode": {
             "extensions":[

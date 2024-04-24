@@ -1,65 +1,78 @@
 # PGRacing Driverless Main Repo
+- [Requirements](##Requirements)
+- [Guide](##Guide)
+    - [Without Docker Compose](###Without-Docker-Compose)
+    - [With Docker Compose](###With-Docker-Compose)
+    - [Visual Studio Code](###Visual-Studio-Code)
+- [License](##License)
 
 ## Requirements
 - Install [Docker Engine](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
 - Install [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit) according to the following [guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
-## Getting started
-### Download
-Clone or download the repository:
+## Guide
+### Without Docker Compose
+#### Build
 ```bash
-git clone https://github.com/PGRacingDriverless/driverless.git
+docker image build -t pgr/dv .
 ```
-Clone your subproject repository as follows:
+#### Run
 ```bash
-cd driverless/ws/src
-git clone <your_repo>
+docker run -it \
+        --rm \
+        --name dv \
+        --privileged \
+        --network host \
+        --ipc host \
+        --pid host \
+        --user ros \
+        --gpus all \
+        --e DISPLAY=$DISPLAY \
+        --e ROS_DOMAIN_ID=5 \
+        -v /dev:/dev \
+        -v /dev/video*:/dev/video* \
+        -v ./ws:/home/ros/ws \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    pgr/dv
 ```
 
-**OR** by using a submodule:
+> **Note**  
+> Customize the options to suit your needs.  
+> Under WSL you may need additional options such as `-v /mnt/wslg:/mnt/wslg`.
+
+### With Docker Compose
+#### Build
+To build all services:
 ```bash
-cd driverless
-git submodule update --init ws/src/<your_repo>
+docker compose build
 ```
-To clone your subproject as a submodule containing other submodules, use:
+If you need a specific service, build it with the command:
 ```bash
-cd driverless
-git submodule update --init --recursive ws/src/<your_repo>
+docker compose build service_name
 ```
-
-### Build Docker container
-Use the script to build the image from Dockerfile:
+#### Run
+To start a container for a service with an interactive shell:
 ```bash
-cd driverless
-./build.sh
+docker compose run service_name
 ```
-If you need the OpenCV library in a container, use with argument:
-```bash
-./build.sh opencv
-```
-> **Important**  
-> Build with opencv takes significantly more time.
 
-**OR** you can also build the image with Visual Studio Code:
-1. Open Visual Studio Code.
-2. Install [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
-3. Press **Ctrl+Shift+P** and choose **Rebuild and Reopen in container**.
+### Visual Studio Code
+You can also build images and run containers using VS Code.
 
-### Run Docker container
+#### Requirements
+- Install [Visual Studio Code](https://code.visualstudio.com/docs/setup/linux).
+- Install [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 
-Run the container with a script:
-```bash
-./run.sh
-```
-If the container is already running, the script will connect you to it.
+The necessary devcontainer.json files for Dev Containers extension are already in the repository.
 
-**OR** with Visual Studio Code:
-1. Open Visual Studio Code.
-2. Install [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
-3. Press **Ctrl+Shift+P** and choose **Reopen in container**.
-
-Now you will be in a container. To open a new terminal, use **Ctrl+Shift+`**.  
-To exit the container, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
+#### Build
+Inside VS Code, press **Ctrl+Shift+P** and choose **Rebuild and Reopen in container**.
+#### Run
+Inside VS Code, press **Ctrl+Shift+P** and choose **Reopen in container**.
+#### Interact
+To open the terminal, use **Ctrl+Shift+`**. 
+#### Exit
+Inside VS Code, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
 
 ## License
 This project is under an ISC license.
