@@ -1,4 +1,7 @@
-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
+####################
+#       BASE       #
+####################
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 AS base
 
 # Never interact with user
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,7 +28,7 @@ RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata
 
 # Create a non-root user
-ARG USERNAME=fsdssim_user
+ARG USERNAME=ros
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
@@ -34,6 +37,37 @@ RUN groupadd --gid $USER_GID $USERNAME \
     # Add sudo support for the non-root user
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
     && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Install programs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \    
+    software-properties-common \
+    lsb-release \
+    openssh-client \
+    gnupg2 \
+    gdb \
+    gcc \
+    g++ \
+    clang \
+    make \
+    cmake \
+    python3 \
+    python3-pip \
+    python3-argcomplete \
+    bash-completion \
+    curl \
+    git \
+    wget \
+    tar \
+    unzip \
+    nano \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+####################
+#       GPU        #
+####################
+FROM base AS gpu
 
 # Dependencies for glvnd, X11, vulkan
 RUN apt-get update && apt-get install -y -qq --no-install-recommends \
@@ -74,31 +108,10 @@ RUN VULKAN_API_VERSION=`dpkg -s libvulkan1 | grep -oP 'Version: [0-9|\.]+' | gre
     }\n\
 }" > /etc/vulkan/icd.d/nvidia_icd.json
 
-# Install common programs
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    software-properties-common \
-    lsb-release \
-    curl \
-    wget \
-    nano \
-    vim \
-    unzip \
-    rsync \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install dev programs
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    openssh-client \
-    gnupg2 \
-    cmake \
-    gdb \
-    bash-completion \
-    python3 \
-    python3-pip \
-    python3-argcomplete \
-    && rm -rf /var/lib/apt/lists/*
+####################
+#       ROS2       #
+####################
+FROM gpu AS ros2
 
 # Install ROS2 Humble
 RUN sudo add-apt-repository universe \
@@ -110,8 +123,6 @@ RUN sudo add-apt-repository universe \
         ros-dev-tools \
         ros-humble-ament-* \
     && rm -rf /var/lib/apt/lists/*
-
-RUN rosdep init || echo "rosdep already initialized"
 
 # Env vars for ROS2
 ENV PATH=/opt/ros/humble/bin:$PATH
@@ -128,64 +139,62 @@ ENV PYTHONPATH=/opt/ros/humble/local/lib/python3.10/dist-packages:/opt/ros/humbl
 RUN echo "if [ -f /opt/ros/${ROS_DISTRO}/setup.bash ]; then source /opt/ros/${ROS_DISTRO}/setup.bash; fi" >> /home/$USERNAME/.bashrc \
     && echo "if [ -f /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash ]; then source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash; fi" >> /home/$USERNAME/.bashrc
 
+####################
+#       DEPS       #
+####################
+FROM ros2 AS rosdeps
+
+RUN rosdep init || echo "rosdep already initialized"
+
+# Install rosdeps
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-ament-* \
+    && rm -rf /var/lib/apt/lists/*
+
+####################
+#       FSDS       #
+####################
+FROM rosdeps AS fsds
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    rsync \
     pulseaudio \
     x11-xserver-utils
 
-USER fsdssim_user
+USER ros
 
 # FSDS repo has to be cloned in the home dir
-WORKDIR /home/fsdssim_user
+WORKDIR /home/ros
 RUN git clone https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator.git -b v2.2.0 --recurse-submodules --quiet
+
+# Compiling the AirSim plugin
+WORKDIR /home/ros/Formula-Student-Driverless-Simulator/AirSim
+RUN ./setup.sh && ./build.sh
 
 # fsds_ros2_bridge will read settings from ~/Formula-Student-Driverless-Simulator/settings.json
 COPY ./settings.json Formula-Student-Driverless-Simulator/settings.json
+# Building the ros2 bridge
+WORKDIR /home/ros/Formula-Student-Driverless-Simulator/ros2
+RUN colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+# Install python requrements
+WORKDIR /home/ros/Formula-Student-Driverless-Simulator/python
+RUN pip3 install -r requirements.txt
+
+# Download and unzip FSDS release
+WORKDIR /home/ros/Formula-Student-Driverless-Simulator
+RUN rm -rf settings.json
+RUN wget "https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator/releases/download/v2.2.0/fsds-v2.2.0-linux.zip" \
+    && unzip fsds-v2.2.0-linux.zip \
+    && rm fsds-v2.2.0-linux.zip
 
 # Copy some camera stuff
 # COPY ./files/default.rviz Formula-Student-Driverless-Simulator/ros/src/fsds_ros_bridge/rviz/default.rviz
 # COPY ./files/cameralauncher.py Formula-Student-Driverless-Simulator/ros/src/fsds_ros_bridge/scripts/cameralauncher.py
 # COPY ./files/fsds_ros_bridge_camera.cpp Formula-Student-Driverless-Simulator/ros/src/fsds_ros_bridge/src/fsds_ros_bridge_camera.cpp
 
-# Compiling the AirSim plugin
-WORKDIR /home/fsdssim_user/Formula-Student-Driverless-Simulator/AirSim
-RUN ./setup.sh && ./build.sh
-
-# ??? clone race evaluator ???
-# RUN cd Formula-Student-Driverless-Simulator/ros/src && \
-#     git clone https://github.com/bartoszptak/ros-driving-track-evaluator.git -b sim/fsds --quiet && \
-#     git clone https://github.com/PUTvision/RoboticsII-FSDS.git -b ros --quiet && \
-#     git clone https://github.com/koide3/ndt_omp.git --quiet && \
-#     git clone https://github.com/SMRT-AIST/fast_gicp.git --recursive --quiet && \
-#     git clone https://github.com/koide3/hdl_graph_slam --quiet
-
-# Building the ros2 bridge
-WORKDIR /home/fsdssim_user/Formula-Student-Driverless-Simulator/ros2
-RUN colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
-
-# # build ROS bridge
-# RUN cd Formula-Student-Driverless-Simulator/ros && \
-# 	catkin config --extend /opt/ros/noetic  && \	
-#     catkin init && \
-# 	LINE=`sed -n '/.publish(go_signal_msg)/=' ./src/fsds_ros_bridge/src/airsim_ros_wrapper.cpp` && \
-# 	sed -i "$LINE"' s/^/\/\//' ./src/fsds_ros_bridge/src/airsim_ros_wrapper.cpp && \
-#     catkin build
-
 # Set up FSDS autocompletion for user
 RUN echo "if [ -f /home/${USERNAME}/Formula-Student-Driverless-Simulator/ros2/install/setup.bash ]; then source /home/${USERNAME}/Formula-Student-Driverless-Simulator/ros2/install/setup.bash; fi" >> /home/$USERNAME/.bashrc
-
-# # Add FSDS env to startup
-# RUN echo "source /home/fsdssim_user/Formula-Student-Driverless-Simulator/ros2/install/setup.bash" >> ~/.bashrc
-
-# Install python requrements
-WORKDIR /home/fsdssim_user/Formula-Student-Driverless-Simulator/python
-RUN pip3 install -r requirements.txt
-
-# Download and unzip FSDS release
-WORKDIR /home/fsdssim_user/Formula-Student-Driverless-Simulator
-RUN rm -rf settings.json
-RUN wget "https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator/releases/download/v2.2.0/fsds-v2.2.0-linux.zip" \
-    && unzip fsds-v2.2.0-linux.zip \
-    && rm fsds-v2.2.0-linux.zip
 
 USER root
 
