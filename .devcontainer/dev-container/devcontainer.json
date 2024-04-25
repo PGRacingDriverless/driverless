@@ -1,9 +1,9 @@
 {
-    "name": "camera",
+    "name": "dev",
     "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
-    "service": "camera",
+    "service": "dev",
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/home/ros/ws",
+    "workspaceFolder": "/home/ros/",
     "customizations": {
         "vscode": {
             "extensions":[

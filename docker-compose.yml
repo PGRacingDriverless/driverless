@@ -1,7 +1,6 @@
 services:
-    # Driverless main
     driverless:
-        build: ./docker/
+        build: .
         image: pgr/dv
         container_name: dv
         stdin_open: true
@@ -25,39 +24,12 @@ services:
         volumes:
             - ./ws:/home/ros/ws
             - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # Camera
-    camera:
-        build: ./docker/camera
-        image: pgr/camera
-        container_name: camera
-        stdin_open: true
-        tty: true
-        privileged: true
-        network_mode: host
-        ipc: host
-        pid: host
-        user: ros
-        deploy:
-            resources:
-                reservations:
-                    devices:
-                        - driver: nvidia
-                          count: all
-                          capabilities:
-                            - gpu
-        environment:
-            - DISPLAY=$DISPLAY
-            - ROS_DOMAIN_ID=5
-        volumes:
-            - ./ws:/home/ros/ws
-            - /tmp/.X11-unix:/tmp/.X11-unix:rw
             - /dev:/dev
-            - /dev/video*:/dev/video*    
-    # Formula Student Driverless Simulator
-    fsds:
-        build: ./docker/fsds
-        image: pgr/fsds
-        container_name: fsds
+            - /dev/video*:/dev/video*
+    dev:
+        build: ./dev
+        image: pgr/dev
+        container_name: dev
         stdin_open: true
         tty: true
         privileged: true
