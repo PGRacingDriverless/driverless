@@ -1,0 +1,17 @@
+{
+    "name": "dev",
+    "dockerComposeFile": "${localWorkspaceFolder}/docker-compose.yml",
+    "service": "dev",
+    "shutdownAction": "stopCompose",
+    "workspaceFolder": "/home/ros/ws",
+    "customizations": {
+        "vscode": {
+            "extensions":[
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "twxs.cmake",
+                "ms-iot.vscode-ros"
+            ]
+        }
+    }
+}
