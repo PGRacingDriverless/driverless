@@ -206,8 +206,9 @@ RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.17.1/onnx
     && tar -xvzf onnxruntime-linux-x64-1.17.1.tgz \
     && rm onnxruntime-linux-x64-1.17.1.tgz \
     # Copy ONNX Runtime to /usr/local/
+    && mkdir -p /usr/local/include/onnxruntime \
     && cp -R onnxruntime-linux-x64-1.17.1/lib/* /usr/local/lib \
-    && cp -R onnxruntime-linux-x64-1.17.1/include/* /usr/local/include \
+    && cp -R onnxruntime-linux-x64-1.17.1/include/* /usr/local/include/onnxruntime \
     && rm -Rf onnxruntime-linux-x64-1.17.1/
 
 FROM camera AS rosdeps
