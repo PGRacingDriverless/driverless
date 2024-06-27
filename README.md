@@ -14,26 +14,31 @@
 ### Without Docker Compose
 #### Build
 ```bash
-docker image build -t pgr/dv .
+docker image build -t pgr/dev .
 ```
+and
+```bash
+docker image build -t pgr/dev . --build-arg="OPENCV=true"
+```
+to build with OpenCV.
 #### Run
 ```bash
 docker run -it \
         --rm \
-        --name dv \
+        --name=dev \
         --privileged \
-        --network host \
-        --ipc host \
-        --pid host \
-        --user ros \
-        --gpus all \
-        --e DISPLAY=$DISPLAY \
-        --e ROS_DOMAIN_ID=5 \
-        -v /dev:/dev \
-        -v /dev/video*:/dev/video* \
+        --network=host \
+        --ipc=host \
+        --pid=host \
+        --user=ros \
+        --gpus=all \
         -v ./ws:/home/ros/ws \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    pgr/dv
+        -v /dev:/dev \
+        -v /dev/video*:/dev/video* \
+        -e DISPLAY=$DISPLAY \
+        -e ROS_DOMAIN_ID=5 \
+    pgr/dev
 ```
 
 > **Note**  
