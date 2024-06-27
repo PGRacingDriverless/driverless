@@ -1,7 +1,4 @@
-.devcontainer
 .vscode
-
-!.devcontainer/dev/devcontainer.json
 
 ws/build/*
 ws/install/*
