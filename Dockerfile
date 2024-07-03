@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-runtime-ubuntu22.04 AS base
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04 AS base
 
 # Never interact with user
 ENV DEBIAN_FRONTEND=noninteractive
