@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04 AS base
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04 AS base
 
 # Never interact with user
 ENV DEBIAN_FRONTEND=noninteractive
@@ -200,16 +200,16 @@ RUN if [ "$OPENCV" = "true" ]; then \
 
 RUN pip install ultralytics
 
-# ONNX Runtime
-RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.17.1/onnxruntime-linux-x64-1.17.1.tgz \
-    # Unzip
-    && tar -xvzf onnxruntime-linux-x64-1.17.1.tgz \
-    && rm onnxruntime-linux-x64-1.17.1.tgz \
-    # Copy ONNX Runtime to /usr/local/
-    && mkdir -p /usr/local/include/onnxruntime \
-    && cp -R onnxruntime-linux-x64-1.17.1/lib/* /usr/local/lib \
-    && cp -R onnxruntime-linux-x64-1.17.1/include/* /usr/local/include/onnxruntime \
-    && rm -Rf onnxruntime-linux-x64-1.17.1/
+# # ONNX Runtime
+# RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.17.1/onnxruntime-linux-x64-1.17.1.tgz \
+#     # Unzip
+#     && tar -xvzf onnxruntime-linux-x64-1.17.1.tgz \
+#     && rm onnxruntime-linux-x64-1.17.1.tgz \
+#     # Copy ONNX Runtime to /usr/local/
+#     && mkdir -p /usr/local/include/onnxruntime \
+#     && cp -R onnxruntime-linux-x64-1.17.1/lib/* /usr/local/lib \
+#     && cp -R onnxruntime-linux-x64-1.17.1/include/* /usr/local/include/onnxruntime \
+#     && rm -Rf onnxruntime-linux-x64-1.17.1/
 
 FROM camera AS rosdeps
 
