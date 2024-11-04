@@ -4,6 +4,9 @@
 [submodule "ws/src/camera"]
 	path = ws/src/camera
 	url = git@github.com:PGRacingDriverless/camera.git
+[submodule "ws/src/cone_detection"]
+	path = ws/src/cone_detection
+	url = git@github.com:PGRacingDriverless/cone_detection.git
 [submodule "ws/src/control"]
 	path = ws/src/control
 	url = git@github.com:PGRacingDriverless/control.git
