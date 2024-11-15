@@ -1,11 +1,11 @@
 # PGRacing Driverless Main Repo
-- [Requirements](##Requirements)
-- [Guide](##Guide)
-    - [Without Docker Compose](###Without-Docker-Compose)
-    - [With Docker Compose](###With-Docker-Compose)
-    - [Visual Studio Code](###Visual-Studio-Code)
-- [License](##License)
-- [Launch Driverless](##Launch-Driverless)
+- [Requirements](#Requirements)
+- [Guide](#Guide)
+    - [Without Docker Compose](#Without-Docker-Compose)
+    - [With Docker Compose](#With-Docker-Compose)
+    - [Visual Studio Code](#Visual-Studio-Code)
+- [Launch Driverless](#Launch-Driverless)
+- [License](#License)
 
 ## Requirements
 - Install [Docker Engine](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
