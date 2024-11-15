@@ -1,9 +1,10 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 
@@ -11,6 +12,9 @@ def generate_launch_description():
     # Note: We can create nodes here in the same launch file, but for more
     # flexibility and future development, separate launch files for each node
     # have been created and are included here.
+
+    # Envivonment varialbles
+    env_action = SetEnvironmentVariable("RCUTILS_LOGGING_SEVERITY_THRESHOLD", "40")  # 40 - only ERROR
 
 
     # Cone detection
@@ -40,16 +44,17 @@ def generate_launch_description():
 
 
     # Control
-    # control_launch_path = os.path.join(
-    #     get_package_share_directory("control"),
-    #     "launch",
-    #     "control.launch.py"
-    # )
-    # control_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         control_launch_path
-    #     )
-    # )
+    control_launch_path = os.path.join(
+        get_package_share_directory("control"),
+        "launch",
+        "control.launch.xml"
+    )
+    control_launch = IncludeLaunchDescription(
+        XMLLaunchDescriptionSource(
+            control_launch_path
+        ),
+        launch_arguments={"ros-args": "--log-level error"}.items()
+    )
 
 
     # RViz2
@@ -78,9 +83,10 @@ def generate_launch_description():
 
     # Launch description
     launch_description = LaunchDescription()
+    launch_description.add_action(env_action)
     launch_description.add_action(cone_detection_launch)
     launch_description.add_action(path_planner_launch)
-    #launch_description.add_action(control_launch)
+    launch_description.add_action(control_launch)
     launch_description.add_action(launch_rviz_arg)
     launch_description.add_action(rviz_node)
 
