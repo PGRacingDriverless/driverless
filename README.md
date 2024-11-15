@@ -5,6 +5,7 @@
     - [With Docker Compose](###With-Docker-Compose)
     - [Visual Studio Code](###Visual-Studio-Code)
 - [License](##License)
+- [Launch Driverless](##Launch-Driverless)
 
 ## Requirements
 - Install [Docker Engine](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
@@ -78,6 +79,12 @@ Inside VS Code, press **Ctrl+Shift+P** and choose **Reopen in container**.
 To open the terminal, use **Ctrl+Shift+`**. 
 #### Exit
 Inside VS Code, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
+
+## Launch Driverless
+Use this command to launch DV system:
+```bash
+ros2 launch dv_master_launch dv_master_launch.launch.py 
+```
 
 ## License
 This project is under an ISC license.
