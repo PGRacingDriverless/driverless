@@ -47,13 +47,12 @@ def generate_launch_description():
     control_launch_path = os.path.join(
         get_package_share_directory("control"),
         "launch",
-        "control.launch.xml"
+        "control.launch.py"
     )
     control_launch = IncludeLaunchDescription(
-        XMLLaunchDescriptionSource(
+        PythonLaunchDescriptionSource(
             control_launch_path
-        ),
-        launch_arguments={"ros-args": "--log-level error"}.items()
+        )
     )
 
 
