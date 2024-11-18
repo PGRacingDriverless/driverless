@@ -342,6 +342,7 @@ FROM fsds AS aliases
 # Set up aliases
 RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
     && echo 'alias cb="colcon build --symlink-install"' >> /home/$USERNAME/.bashrc \
+    && echo 'alias cbd="colcon build --symlink-install -DCMAKE_BUILD_TYPE=Debug"' >> /home/$USERNAME/.bashrc \
     && echo 'alias cbr="colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ru="rosdep update"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ri="rosdep install --from-paths src --ignore-src -r -y"' >> /home/$USERNAME/.bashrc \
