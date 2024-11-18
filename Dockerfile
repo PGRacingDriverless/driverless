@@ -200,16 +200,19 @@ RUN if [ "$OPENCV" = "true" ]; then \
 
 RUN pip install ultralytics
 
-# # ONNX Runtime
-# RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.17.1/onnxruntime-linux-x64-1.17.1.tgz \
-#     # Unzip
-#     && tar -xvzf onnxruntime-linux-x64-1.17.1.tgz \
-#     && rm onnxruntime-linux-x64-1.17.1.tgz \
-#     # Copy ONNX Runtime to /usr/local/
-#     && mkdir -p /usr/local/include/onnxruntime \
-#     && cp -R onnxruntime-linux-x64-1.17.1/lib/* /usr/local/lib \
-#     && cp -R onnxruntime-linux-x64-1.17.1/include/* /usr/local/include/onnxruntime \
-#     && rm -Rf onnxruntime-linux-x64-1.17.1/
+# ONNX Runtime
+# Note: You can change LD_LIBRARY_PATH / LIBRARY_PATH
+RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.1/onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
+    && wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.1/onnxruntime-linux-x64-1.18.1.tgz \
+    # Unzip
+    && tar -xvzf onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
+    && tar -xvzf onnxruntime-linux-x64-1.18.1.tgz \
+    # Copy ONNX Runtime to /usr/local/
+    && mkdir -p /usr/local/onnxruntime-libs \
+    && mv onnxruntime-linux-x64-gpu-1.18.1 onnxruntime-linux-x64-1.18.1 /usr/local/onnxruntime-libs/ \
+    # Clear
+    && rm onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
+    && rm onnxruntime-linux-x64-1.18.1.tgz
 
 FROM camera AS rosdeps
 
@@ -303,8 +306,6 @@ RUN git clone https://github.com/FS-Driverless/Formula-Student-Driverless-Simula
     && ./Formula-Student-Driverless-Simulator/AirSim/setup.sh \
     && ./Formula-Student-Driverless-Simulator/AirSim/build.sh
 
-# fsds_ros2_bridge will read settings from ~/Formula-Student-Driverless-Simulator/settings.json
-COPY ./config/settings.json Formula-Student-Driverless-Simulator/settings.json
 # Building the ros2 bridge
 WORKDIR /home/ros/Formula-Student-Driverless-Simulator/ros2
 RUN colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
@@ -318,7 +319,11 @@ WORKDIR /home/ros/Formula-Student-Driverless-Simulator
 RUN rm -rf settings.json \
     && wget "https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator/releases/download/v2.2.0/fsds-v2.2.0-linux.zip" \
     && unzip fsds-v2.2.0-linux.zip \
-    && rm fsds-v2.2.0-linux.zip
+    && rm fsds-v2.2.0-linux.zip \
+    && rm -rf settings.json
+
+# fsds_ros2_bridge will read settings from ~/Formula-Student-Driverless-Simulator/settings.json
+COPY ./config/settings.json settings.json
 
 # Copy some camera stuff
 # COPY ./files/default.rviz Formula-Student-Driverless-Simulator/ros/src/fsds_ros_bridge/rviz/default.rviz
