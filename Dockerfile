@@ -240,6 +240,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-humble-ament-* \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # LEMON for pathplanner
+    liblemon-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM rosdeps AS gpu
 # Expose Nvidia driver to allow OpenGL
 # Dependencies for GLVND, X11, Vulkan
