@@ -3,8 +3,8 @@
 - [Guide](#Guide)
     - [Without Docker Compose](#Without-Docker-Compose)
     - [With Docker Compose](#With-Docker-Compose)
-    - [Visual Studio Code](#Visual-Studio-Code)
-- [Launch Driverless](#Launch-Driverless)
+    - [With Visual Studio Code](#With-Visual-Studio-Code)
+    - [Launch driverless system](#Launch-driverless-system)
 - [License](#License)
 
 ## Requirements
@@ -15,14 +15,18 @@
 ### Without Docker Compose
 #### Build
 ```bash
+./scripts/build.sh
+```
+or
+```bash
 docker image build -t pgr/dev .
 ```
-and
-```bash
-docker image build -t pgr/dev . --build-arg="OPENCV=true"
-```
-to build with OpenCV.
+
 #### Run
+```bash
+./scripts/run.sh
+```
+or
 ```bash
 docker run -it \
         --rm \
@@ -44,7 +48,7 @@ docker run -it \
 
 > **Note**  
 > Customize the options to suit your needs.  
-> Under WSL you may need additional options such as `-v /mnt/wslg:/mnt/wslg`.
+> Under WSL you may need additional options such as `-v /mnt/wslg:/mnt/wslg`. The script `run.sh` takes this into account.
 
 ### With Docker Compose
 #### Build
@@ -62,7 +66,7 @@ To start a container for a service with an interactive shell:
 docker compose run service_name
 ```
 
-### Visual Studio Code
+### With Visual Studio Code
 You can also build images and run containers using VS Code.
 
 #### Requirements
@@ -80,11 +84,11 @@ To open the terminal, use **Ctrl+Shift+`**.
 #### Exit
 Inside VS Code, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
 
-## Launch Driverless
-Use this command to launch DV system:
+### Launch driverless system
+To start an entire driverless system (after building and sourcing):
 ```bash
 ros2 launch dv_master_launch dv_master_launch.launch.py 
 ```
 
 ## License
-This project is under an ISC license.
+This project is under an MIT license.

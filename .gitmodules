@@ -1,9 +1,3 @@
-[submodule "ws/src/assets"]
-	path = ws/src/assets
-	url = git@github.com:PGRacingDriverless/assets.git
-[submodule "ws/src/camera"]
-	path = ws/src/camera
-	url = git@github.com:PGRacingDriverless/camera.git
 [submodule "ws/src/cone_detection"]
 	path = ws/src/cone_detection
 	url = git@github.com:PGRacingDriverless/cone_detection.git
@@ -13,6 +7,3 @@
 [submodule "ws/src/pathplanner"]
 	path = ws/src/pathplanner
 	url = git@github.com:PGRacingDriverless/pathplanner.git
-[submodule "ws/src/slam"]
-	path = ws/src/slam
-	url = git@github.com:PGRacingDriverless/slam.git

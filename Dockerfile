@@ -84,119 +84,114 @@ ENV ROS_VERSION=2
 FROM ros2 AS camera
 
 # OpenCV
-# Use --build-arg="OPENCV=true" to build with OpenCV
-ARG OPENCV=false
-RUN if [ "$OPENCV" = "true" ]; then \
-        # Install OpenCV dependencies
-        apt-get update && apt-get install -y -qq --no-install-recommends \
-            # OpenCV dependencies
-            libgtk2.0-dev \
-            libavcodec-dev \
-            libavformat-dev \
-            libswscale-dev \
-            python3-dev \
-            python3-numpy \
-            libtbb2 \
-            libtbb-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libdc1394-dev \
-            libcanberra-gtk-module \
-            libcanberra-gtk3-module \
-        && rm -rf /var/lib/apt/lists/* \
-        # Download OpenCV
-        && wget -O opencv.zip https://github.com/opencv/opencv/archive/4.9.0.zip \
-        && wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.9.0.zip \
-        # Unzip
-        && unzip opencv.zip \
-        && unzip opencv_contrib.zip \
-        && rm opencv.zip opencv_contrib.zip \
-        # Create build directory and switch into it
-        && cd /opencv-4.9.0 && mkdir -p build && cd build \
-        # Configure: select the modules you need
-        # https://docs.opencv.org/4.x/index.html
-        && cmake \
-            -DCMAKE_BUILD_TYPE=RELEASE \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -DWITH_CUDA=NO \
-            -DWITH_OPENCL=NO \
-            -DBUILD_PERF_TESTS=OFF \
-            -DBUILD_TESTS=OFF \
-            -DWITH_WIN32UI=OFF \
-            -DBUILD_JAVA=OFF \
-            -DBUILD_FAT_JAVA_LIB=OFF \
-            -DBUILD_OPENCV_PYTHON2=OFF \
-            -DBUILD_OPENCV_PYTHON3=OFF \
-            -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.9.0/modules \
-                -DBUILD_opencv_alphamat=OFF \
-                -DBUILD_opencv_aruco=OFF \
-                -DBUILD_opencv_bgsegm=OFF \
-                -DBUILD_opencv_bioinspired=OFF \
-                -DBUILD_opencv_cannops=OFF \
-                -DBUILD_opencv_ccalib=OFF \
-                -DBUILD_opencv_cudaarithm=OFF \
-                -DBUILD_opencv_cudabgsegm=OFF \
-                -DBUILD_opencv_cudacodec=OFF \
-                -DBUILD_opencv_cudafeatures2d=OFF \
-                -DBUILD_opencv_cudafilters=OFF \
-                -DBUILD_opencv_cudaimgproc=OFF \
-                -DBUILD_opencv_cudalegacy=OFF \
-                -DBUILD_opencv_cudaobjdetect=OFF \
-                -DBUILD_opencv_cudaoptflow=OFF \
-                -DBUILD_opencv_cudastereo=OFF \
-                -DBUILD_opencv_cudawarping=OFF \
-                -DBUILD_opencv_cudev=OFF \
-                -DBUILD_opencv_cvv=OFF \
-                -DBUILD_opencv_datasets=OFF \
-                -DBUILD_opencv_dnn_objdetect=OFF \
-                -DBUILD_opencv_dnn_superres=OFF \
-                -DBUILD_opencv_dpm=OFF \
-                -DBUILD_opencv_face=OFF \
-                -DBUILD_opencv_freetype=OFF \
-                -DBUILD_opencv_fuzzy=OFF \
-                -DBUILD_opencv_hdf=OFF \
-                -DBUILD_opencv_hfs=OFF \
-                -DBUILD_opencv_img_hash=OFF \
-                -DBUILD_opencv_intensity_transform=OFF \
-                -DBUILD_opencv_julia=OFF \
-                -DBUILD_opencv_line_descriptor=OFF \
-                -DBUILD_opencv_mcc=OFF \
-                -DBUILD_opencv_optflow=OFF \
-                -DBUILD_opencv_ovis=OFF \
-                -DBUILD_opencv_phase_unwrapping=OFF \
-                -DBUILD_opencv_plot=OFF \
-                -DBUILD_opencv_quality=OFF \
-                -DBUILD_opencv_rapid=OFF \
-                -DBUILD_opencv_reg=OFF \
-                -DBUILD_opencv_rgbd=OFF \
-                -DBUILD_opencv_saliency=OFF \
-                -DBUILD_opencv_sfm=OFF \
-                -DBUILD_opencv_shape=OFF \
-                -DBUILD_opencv_signal=OFF \
-                -DBUILD_opencv_stereo=OFF \
-                -DBUILD_opencv_structured_light=OFF \
-                -DBUILD_opencv_superres=OFF \
-                -DBUILD_opencv_surface_matching=OFF \
-                -DBUILD_opencv_text=OFF \
-                -DBUILD_opencv_tracking=OFF \
-                -DBUILD_opencv_videostab=OFF \
-                -DBUILD_opencv_viz=OFF \
-                -DBUILD_opencv_wechat_qrcode=OFF \
-                -DBUILD_opencv_xfeatures2d=OFF \
-                -DBUILD_opencv_ximgproc=OFF \
-                -DBUILD_opencv_xobjdetect=OFF \
-                -DBUILD_opencv_xphoto=OFF \
-            .. \
-        # Build OpenCV
-        && cmake --build . \
-        # Install OpenCV
-        && make -j"$(nproc)" \
-        && make install \
-        # Clear
-        && cd / \
-        && rm -rf /opencv-4.9.0 /opencv_contrib-4.9.0 \
-    ; fi
+RUN apt-get update && apt-get install -y -qq --no-install-recommends \
+        # OpenCV dependencies
+        libgtk2.0-dev \
+        libavcodec-dev \
+        libavformat-dev \
+        libswscale-dev \
+        python3-dev \
+        python3-numpy \
+        libtbb2 \
+        libtbb-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libdc1394-dev \
+        libcanberra-gtk-module \
+        libcanberra-gtk3-module \
+    && rm -rf /var/lib/apt/lists/* \
+    # Download OpenCV
+    && wget -O opencv.zip https://github.com/opencv/opencv/archive/4.9.0.zip \
+    && wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.9.0.zip \
+    # Unzip
+    && unzip opencv.zip \
+    && unzip opencv_contrib.zip \
+    && rm opencv.zip opencv_contrib.zip \
+    # Create build directory and switch into it
+    && cd /opencv-4.9.0 && mkdir -p build && cd build \
+    # Configure: select the modules you need
+    # https://docs.opencv.org/4.x/index.html
+    && cmake \
+        -DCMAKE_BUILD_TYPE=RELEASE \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DWITH_CUDA=NO \
+        -DWITH_OPENCL=NO \
+        -DBUILD_PERF_TESTS=OFF \
+        -DBUILD_TESTS=OFF \
+        -DWITH_WIN32UI=OFF \
+        -DBUILD_JAVA=OFF \
+        -DBUILD_FAT_JAVA_LIB=OFF \
+        -DBUILD_OPENCV_PYTHON2=OFF \
+        -DBUILD_OPENCV_PYTHON3=OFF \
+        -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.9.0/modules \
+            -DBUILD_opencv_alphamat=OFF \
+            -DBUILD_opencv_aruco=OFF \
+            -DBUILD_opencv_bgsegm=OFF \
+            -DBUILD_opencv_bioinspired=OFF \
+            -DBUILD_opencv_cannops=OFF \
+            -DBUILD_opencv_ccalib=OFF \
+            -DBUILD_opencv_cudaarithm=OFF \
+            -DBUILD_opencv_cudabgsegm=OFF \
+            -DBUILD_opencv_cudacodec=OFF \
+            -DBUILD_opencv_cudafeatures2d=OFF \
+            -DBUILD_opencv_cudafilters=OFF \
+            -DBUILD_opencv_cudaimgproc=OFF \
+            -DBUILD_opencv_cudalegacy=OFF \
+            -DBUILD_opencv_cudaobjdetect=OFF \
+            -DBUILD_opencv_cudaoptflow=OFF \
+            -DBUILD_opencv_cudastereo=OFF \
+            -DBUILD_opencv_cudawarping=OFF \
+            -DBUILD_opencv_cudev=OFF \
+            -DBUILD_opencv_cvv=OFF \
+            -DBUILD_opencv_datasets=OFF \
+            -DBUILD_opencv_dnn_objdetect=OFF \
+            -DBUILD_opencv_dnn_superres=OFF \
+            -DBUILD_opencv_dpm=OFF \
+            -DBUILD_opencv_face=OFF \
+            -DBUILD_opencv_freetype=OFF \
+            -DBUILD_opencv_fuzzy=OFF \
+            -DBUILD_opencv_hdf=OFF \
+            -DBUILD_opencv_hfs=OFF \
+            -DBUILD_opencv_img_hash=OFF \
+            -DBUILD_opencv_intensity_transform=OFF \
+            -DBUILD_opencv_julia=OFF \
+            -DBUILD_opencv_line_descriptor=OFF \
+            -DBUILD_opencv_mcc=OFF \
+            -DBUILD_opencv_optflow=OFF \
+            -DBUILD_opencv_ovis=OFF \
+            -DBUILD_opencv_phase_unwrapping=OFF \
+            -DBUILD_opencv_plot=OFF \
+            -DBUILD_opencv_quality=OFF \
+            -DBUILD_opencv_rapid=OFF \
+            -DBUILD_opencv_reg=OFF \
+            -DBUILD_opencv_rgbd=OFF \
+            -DBUILD_opencv_saliency=OFF \
+            -DBUILD_opencv_sfm=OFF \
+            -DBUILD_opencv_shape=OFF \
+            -DBUILD_opencv_signal=OFF \
+            -DBUILD_opencv_stereo=OFF \
+            -DBUILD_opencv_structured_light=OFF \
+            -DBUILD_opencv_superres=OFF \
+            -DBUILD_opencv_surface_matching=OFF \
+            -DBUILD_opencv_text=OFF \
+            -DBUILD_opencv_tracking=OFF \
+            -DBUILD_opencv_videostab=OFF \
+            -DBUILD_opencv_viz=OFF \
+            -DBUILD_opencv_wechat_qrcode=OFF \
+            -DBUILD_opencv_xfeatures2d=OFF \
+            -DBUILD_opencv_ximgproc=OFF \
+            -DBUILD_opencv_xobjdetect=OFF \
+            -DBUILD_opencv_xphoto=OFF \
+        .. \
+    # Build OpenCV
+    && cmake --build . \
+    # Install OpenCV
+    && make -j"$(nproc)" \
+    && make install \
+    # Clear
+    && cd / \
+    && rm -rf /opencv-4.9.0 /opencv_contrib-4.9.0
 
 RUN pip install ultralytics
 
@@ -223,13 +218,15 @@ RUN rosdep init || echo "" \
         ros-humble-cv-bridge \
         ros-humble-realsense2-camera \
         ros-humble-vision-opencv \
-        # ???
+        # point cloud
         ros-humble-pcl-ros \
+        # gtsam
+        ros-humble-gtsam \
+        # ???
         ros-humble-cartographer-ros \
         ros-humble-hls-lfcd-lds-driver \
         ros-humble-navigation2 \
         ros-humble-nav2-bringup \
-        ros-humble-gtsam \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
