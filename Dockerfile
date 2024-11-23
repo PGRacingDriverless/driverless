@@ -242,6 +242,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblemon-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Armadillo for cone detection
+RUN wget -O armadillo-14.2.0.tar.xz https://sourceforge.net/projects/arma/files/armadillo-14.2.0.tar.xz/download \
+    && tar -xvf armadillo-14.2.0.tar.xz \
+    && cd /armadillo-14.2.0 && mkdir -p build && cd build \
+    # Build
+    && cmake .. \
+    # Install
+    && make \
+    && make install \
+    # Clear
+    && cd / \
+    && rm -rf /armadillo-14.2.0 /armadillo-14.2.0.tar.xz
+
 FROM rosdeps AS gpu
 # Expose Nvidia driver to allow OpenGL
 # Dependencies for GLVND, X11, Vulkan
