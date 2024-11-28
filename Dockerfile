@@ -1,7 +1,7 @@
 FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04 AS base
 
 # Never interact with user
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Upgrade packages
 RUN apt-get update && apt-get -y upgrade \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8 \
     && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # Install timezone
 RUN apt-get update && apt-get install -y \
