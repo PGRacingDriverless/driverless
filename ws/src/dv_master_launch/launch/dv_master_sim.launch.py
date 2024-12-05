@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
@@ -16,6 +16,23 @@ def generate_launch_description():
     # Envivonment varialbles
     env_action = SetEnvironmentVariable("RCUTILS_LOGGING_SEVERITY_THRESHOLD", "40")  # 40 - only ERROR
 
+    # FSDS launch
+    fsds_bridge_launch_path = os.path.join(
+        get_package_share_directory("fsds_ros2_bridge"),
+        "launch",
+        "fsds_ros2_bridge.launch.py"
+    )
+    fsds_bridge_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            fsds_bridge_launch_path
+        )
+    )
+    fsds_script_path = '/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh'
+    fsds_script_action = ExecuteProcess(
+        cmd=['bash', fsds_script_path],
+        output='screen'
+    )
+
 
     # Cone detection
     cone_detection_launch_path = os.path.join(
@@ -23,6 +40,7 @@ def generate_launch_description():
         "launch",
         "cone_detection.launch.py"
     )
+
     cone_detection_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             cone_detection_launch_path
@@ -83,10 +101,12 @@ def generate_launch_description():
     # Launch description
     launch_description = LaunchDescription()
     launch_description.add_action(env_action)
+    launch_description.add_action(fsds_bridge_launch)
+    launch_description.add_action(fsds_script_action)
     launch_description.add_action(cone_detection_launch)
     launch_description.add_action(path_planner_launch)
     launch_description.add_action(control_launch)
     launch_description.add_action(launch_rviz_arg)
-    launch_description.add_action(rviz_node)
+    #launch_description.add_action(rviz_node)
 
     return launch_description
