@@ -86,8 +86,9 @@ RUN apt-get update && apt-get install -y \
 # Install ROS dev packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-dev-tools \
-        ros-humble-rviz2 \
         ros-humble-ament-* \
+        ros-humble-rviz2 \
+        ros-humble-plotjuggler-ros \
     && rm -rf /var/lib/apt/lists/*
 
 # Initialize ROS dependencies
