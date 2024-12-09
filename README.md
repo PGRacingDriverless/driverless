@@ -87,7 +87,7 @@ Inside VS Code, press **Ctrl+Shift+P** and select **Reopen Folder Locally**.
 ### Launch driverless system
 To start an entire driverless system (after building and sourcing):
 ```bash
-ros2 launch dv_master_launch dv_master_launch.launch.py 
+ros2 launch dv_master_launch dv_master.launch.py 
 ```
 
 ## License
