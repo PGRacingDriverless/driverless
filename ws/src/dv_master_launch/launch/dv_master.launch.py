@@ -16,6 +16,19 @@ def generate_launch_description():
     # Envivonment varialbles
     env_action = SetEnvironmentVariable("RCUTILS_LOGGING_SEVERITY_THRESHOLD", "40")  # 40 - only ERROR
 
+    # The current event (mission) 
+    # Possible values (lowercase):
+    # - "acceleration" : acceleration test
+    # - "skidpad"      : figure-eight handling test
+    # - "autocross"    : obstacle avoidance (slalom)
+    # - "trackdrive"   : multiple laps on a track
+    # - "endurance"    : long-distance reliability and efficiency test
+    current_mission = LaunchConfiguration("mission")
+    current_mission_arg = DeclareLaunchArgument(
+        "mission",
+        default_value="trackdrive",
+        description="Select current mission"
+    )
 
     # Cone detection
     cone_detection_launch_path = os.path.join(
@@ -64,6 +77,7 @@ def generate_launch_description():
         default_value="True",
         description="Launch RViz2"
     )
+
     rviz_config_path = os.path.join(
         get_package_share_directory("dv_master_launch"),
         "rviz",
@@ -83,6 +97,7 @@ def generate_launch_description():
     # Launch description
     launch_description = LaunchDescription()
     launch_description.add_action(env_action)
+    launch_description.add_action(current_mission_arg)
     launch_description.add_action(cone_detection_launch)
     launch_description.add_action(path_planner_launch)
     launch_description.add_action(control_launch)

@@ -16,6 +16,20 @@ def generate_launch_description():
     # Envivonment varialbles
     env_action = SetEnvironmentVariable("RCUTILS_LOGGING_SEVERITY_THRESHOLD", "40")  # 40 - only ERROR
 
+    # The current event (mission) 
+    # Possible values (lowercase):
+    # - "acceleration" : acceleration test
+    # - "skidpad"      : figure-eight handling test
+    # - "autocross"    : obstacle avoidance (slalom)
+    # - "trackdrive"   : multiple laps on a track
+    # - "endurance"    : long-distance reliability and efficiency test
+    current_mission = LaunchConfiguration("mission")
+    current_mission_arg = DeclareLaunchArgument(
+        "mission",
+        default_value="trackdrive",
+        description="Select current mission"
+    )
+
     # FSDS launch
     fsds_bridge_launch_path = os.path.join(
         get_package_share_directory("fsds_ros2_bridge"),
@@ -25,12 +39,13 @@ def generate_launch_description():
     fsds_bridge_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             fsds_bridge_launch_path
-        )
+        ),
+        launch_arguments=[('output', 'log')]
     )
     fsds_script_path = '/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh'
     fsds_script_action = ExecuteProcess(
         cmd=['bash', fsds_script_path],
-        output='screen'
+        output='log'
     )
 
 
@@ -103,6 +118,7 @@ def generate_launch_description():
     launch_description.add_action(env_action)
     launch_description.add_action(fsds_bridge_launch)
     launch_description.add_action(fsds_script_action)
+    launch_description.add_action(current_mission_arg)
     launch_description.add_action(cone_detection_launch)
     launch_description.add_action(path_planner_launch)
     launch_description.add_action(control_launch)
