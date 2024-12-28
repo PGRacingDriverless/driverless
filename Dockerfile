@@ -222,7 +222,8 @@ RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
     && echo 'alias cbr="colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ru="rosdep update"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ri="rosdep install --from-paths src --ignore-src -r -y"' >> /home/$USERNAME/.bashrc \
-    && echo 'alias gpu="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"' >> /home/$USERNAME/.bashrc
+    && echo 'alias gpu="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"' >> /home/$USERNAME/.bashrc \
+    && echo 'alias src="source /home/ros/ws/install/setup.bash"' >> /home/$USERNAME/.bashrc 
 
 WORKDIR /home/ros/ws
 
