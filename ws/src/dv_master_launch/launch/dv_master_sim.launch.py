@@ -2,7 +2,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -30,18 +30,37 @@ def generate_launch_description():
         description="Select current mission"
     )
 
+
     # FSDS launch
+    manual_mode = LaunchConfiguration("manual_mode")
+    manual_mode_arg = DeclareLaunchArgument(
+        "manual_mode",
+        default_value="false",
+        description="Enable manual mode for fsds_bridge"
+    )
+    
     fsds_bridge_launch_path = os.path.join(
         get_package_share_directory("fsds_ros2_bridge"),
         "launch",
         "fsds_ros2_bridge.launch.py"
     )
+    
     fsds_bridge_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             fsds_bridge_launch_path
         ),
-        launch_arguments=[('output', 'log')]
+        launch_arguments=[('output', 'log'), ('manual_mode', 'true')],
+        condition=IfCondition(manual_mode)
     )
+    
+    fsds_bridge_launch_no_manual_mode = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            fsds_bridge_launch_path
+        ),
+        launch_arguments=[('output', 'log')],
+        condition=UnlessCondition(manual_mode)
+    )
+    
     fsds_script_path = '/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh'
     fsds_script_action = ExecuteProcess(
         cmd=['bash', fsds_script_path],
@@ -116,7 +135,9 @@ def generate_launch_description():
     # Launch description
     launch_description = LaunchDescription()
     launch_description.add_action(env_action)
+    launch_description.add_action(manual_mode_arg)
     launch_description.add_action(fsds_bridge_launch)
+    launch_description.add_action(fsds_bridge_launch_no_manual_mode)
     launch_description.add_action(fsds_script_action)
     launch_description.add_action(current_mission_arg)
     launch_description.add_action(cone_detection_launch)
