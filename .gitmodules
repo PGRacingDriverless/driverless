@@ -6,7 +6,7 @@
 	url = git@github.com:PGRacingDriverless/control.git
 [submodule "ws/src/pathplanner"]
 	path = ws/src/pathplanner
-	url = git@github.com:PGRacingDriverless/pathplanner.git
+	url = git@github.com:PGRacingDriverless/path_planning.git
 [submodule "ws/src/common"]
 	path = ws/src/common
 	url = git@github.com:PGRacingDriverless/common.git
