@@ -4,8 +4,8 @@
 [submodule "ws/src/control"]
 	path = ws/src/control
 	url = git@github.com:PGRacingDriverless/control.git
-[submodule "ws/src/pathplanner"]
-	path = ws/src/pathplanner
+[submodule "ws/src/path_planning"]
+	path = ws/src/path_planning
 	url = git@github.com:PGRacingDriverless/path_planning.git
 [submodule "ws/src/common"]
 	path = ws/src/common

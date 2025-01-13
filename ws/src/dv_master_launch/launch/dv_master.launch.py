@@ -47,7 +47,7 @@ def generate_launch_description():
     path_planner_launch_path = os.path.join(
         get_package_share_directory("path_planning"),
         "launch",
-        "pathplanner.launch.py"
+        "path_planning.launch.py"
     )
     path_planner_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
