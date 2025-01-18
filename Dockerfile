@@ -227,6 +227,10 @@ RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
     && echo 'alias bridge="source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash && ros2 launch fsds_ros2_bridge fsds_ros2_bridge.launch.py"' >> /home/$USERNAME/.bashrc \
     && echo 'alias src="source /home/ros/ws/install/setup.bash && source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash"' >> /home/$USERNAME/.bashrc 
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nlohmann-json3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /home/ros/ws
 
 ENV DEBIAN_FRONTEND=
