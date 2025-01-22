@@ -223,7 +223,7 @@ RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ru="rosdep update"' >> /home/$USERNAME/.bashrc \
     && echo 'alias ri="rosdep install --from-paths src --ignore-src -r -y"' >> /home/$USERNAME/.bashrc \
     && echo 'alias gpu="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"' >> /home/$USERNAME/.bashrc \
-    && echo 'alias fsds="/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh"' >> /home/$USERNAME/.bashrc \
+    && echo 'alias fsds="/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh -WINDOWED -resx=1200"' >> /home/$USERNAME/.bashrc \
     && echo 'alias bridge="source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash && ros2 launch fsds_ros2_bridge fsds_ros2_bridge.launch.py"' >> /home/$USERNAME/.bashrc \
     && echo 'alias src="source /home/ros/ws/install/setup.bash && source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash"' >> /home/$USERNAME/.bashrc 
 
