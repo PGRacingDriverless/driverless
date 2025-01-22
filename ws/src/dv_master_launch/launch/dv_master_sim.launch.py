@@ -44,7 +44,7 @@ def generate_launch_description():
     )
     fsds_script_path = '/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh'
     fsds_script_action = ExecuteProcess(
-        cmd=['bash', fsds_script_path],
+        cmd=['bash', fsds_script_path, "-WINDOWED", "-resx=1200"],
         output='log'
     )
 
