@@ -225,7 +225,9 @@ RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
     && echo 'alias gpu="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"' >> /home/$USERNAME/.bashrc \
     && echo 'alias fsds="/home/ros/Formula-Student-Driverless-Simulator/FSDS.sh -WINDOWED -resx=1200"' >> /home/$USERNAME/.bashrc \
     && echo 'alias bridge="source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash && ros2 launch fsds_ros2_bridge fsds_ros2_bridge.launch.py"' >> /home/$USERNAME/.bashrc \
-    && echo 'alias src="source /home/ros/ws/install/setup.bash && source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash"' >> /home/$USERNAME/.bashrc 
+    && echo 'alias src="source /home/ros/ws/install/setup.bash && source /home/ros/Formula-Student-Driverless-Simulator/ros2/install/setup.bash"' >> /home/$USERNAME/.bashrc \
+    && echo 'alias dv="ros2 launch dv_master_launch dv_master.launch.py"' >> /home/$USERNAME/.bashrc \
+    && echo 'alias dvs="ros2 launch dv_master_launch dv_master_sim.launch.py"' >> /home/$USERNAME/.bashrc
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nlohmann-json3-dev \
