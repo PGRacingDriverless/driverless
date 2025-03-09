@@ -231,6 +231,7 @@ RUN echo 'alias ws="cd ~/ws"' >> /home/$USERNAME/.bashrc \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nlohmann-json3-dev \
+    ros-humble-gtsam \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/ros/ws
