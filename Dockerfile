@@ -97,24 +97,85 @@ RUN rosdep init || echo ""
 # Install cone_detection dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libarmadillo-dev \        
-        libopencv-dev \
+        #libopencv-dev \
         ros-humble-cv-bridge \
         ros-humble-pcl-ros \
     && rm -rf /var/lib/apt/lists/*
 
 # ONNX Runtime
 RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.1/onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
-    && wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.1/onnxruntime-linux-x64-1.18.1.tgz \
-    && tar -xvzf onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
-    && tar -xvzf onnxruntime-linux-x64-1.18.1.tgz \
-    && mkdir -p /usr/local/onnxruntime-libs \
-    && mv onnxruntime-linux-x64-gpu-1.18.1 onnxruntime-linux-x64-1.18.1 /usr/local/onnxruntime-libs/ \
-    && rm onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz onnxruntime-linux-x64-1.18.1.tgz
+&& wget https://github.com/microsoft/onnxruntime/releases/download/v1.18.1/onnxruntime-linux-x64-1.18.1.tgz \
+&& tar -xvzf onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz \
+&& tar -xvzf onnxruntime-linux-x64-1.18.1.tgz \
+&& mkdir -p /usr/local/onnxruntime-libs \
+&& mv onnxruntime-linux-x64-gpu-1.18.1 onnxruntime-linux-x64-1.18.1 /usr/local/onnxruntime-libs/ \
+&& rm onnxruntime-linux-x64-gpu-cuda12-1.18.1.tgz onnxruntime-linux-x64-1.18.1.tgz
 
 # Install path_planner dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        liblemon-dev \
-    && rm -rf /var/lib/apt/lists/*
+    liblemon-dev \
+&& rm -rf /var/lib/apt/lists/*
+
+# Set the OpenCV version
+ENV VERSION=4.10.0
+# Download and extract OpenCV
+RUN wget https://github.com/opencv/opencv/archive/refs/tags/${VERSION}.zip -O ${VERSION}.zip \
+    && unzip ${VERSION}.zip \
+    && rm ${VERSION}.zip
+
+# Download and extract OpenCV contrib
+RUN wget https://github.com/opencv/opencv_contrib/archive/refs/tags/${VERSION}.zip -O opencv_extra_${VERSION}.zip \
+    && unzip opencv_extra_${VERSION}.zip \
+    && rm opencv_extra_${VERSION}.zip
+
+# Build OpenCV
+RUN cd opencv-${VERSION} \
+    && mkdir build \
+    && cd build \
+    && cmake -D CMAKE_BUILD_TYPE=RELEASE \
+             -D CMAKE_INSTALL_PREFIX=/usr/local \
+             -D WITH_TBB=ON \
+             -D ENABLE_FAST_MATH=1 \
+             -D CUDA_FAST_MATH=1 \
+             -D WITH_CUBLAS=1 \
+             -D WITH_CUDA=ON \
+             -D BUILD_opencv_cudacodec=ON \
+             -D WITH_CUDNN=ON \
+             -D OPENCV_DNN_CUDA=ON \
+             -D WITH_QT=OFF \
+             -D WITH_OPENGL=ON \
+             -D BUILD_opencv_apps=OFF \
+             -D BUILD_opencv_python2=OFF \
+             -D OPENCV_GENERATE_PKGCONFIG=ON \
+             -D OPENCV_PC_FILE_NAME=opencv.pc \
+             -D OPENCV_ENABLE_NONFREE=ON \
+             -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${VERSION}/modules \
+             -D INSTALL_PYTHON_EXAMPLES=OFF \
+             -D INSTALL_C_EXAMPLES=OFF \
+             -D BUILD_EXAMPLES=OFF \
+             -D WITH_FFMPEG=ON \
+             -D CUDNN_INCLUDE_DIR=/usr/include \
+             -D CUDNN_LIBRARY=/usr/local/cuda-12.4/targets/x86_64-linux/lib/libcudnn.so \
+             .. \
+    && make -j8 \
+    && make install
+
+# Clean up
+RUN rm -rf /opencv-${VERSION} /opencv_contrib-${VERSION}
+
+# TensorRT variables
+ENV OS="ubuntu2204"
+ENV TAG="10.7.0-cuda-12.6"
+ENV TENSORRT_DEB="nv-tensorrt-local-repo-${OS}-${TAG}_1.0-1_amd64.deb"
+ENV TENSORRT_URL="https://developer.nvidia.com/downloads/compute/machine-learning/tensorrt/10.7.0/local_repo/${TENSORRT_DEB}"
+
+# Install TensorRT
+RUN wget ${TENSORRT_URL} -O ${TENSORRT_DEB} \
+    && sudo dpkg -i ${TENSORRT_DEB} \
+    && sudo cp /var/nv-tensorrt-local-repo-${OS}-${TAG}/*-keyring.gpg /usr/share/keyrings/ \
+    && sudo apt-get update \
+    && sudo apt-get install -y tensorrt \
+    && rm ${TENSORRT_DEB}
 
 FROM dev AS gpu
 
@@ -233,6 +294,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nlohmann-json3-dev \
     ros-humble-gtsam \
     libgeographic-dev \
+    tensorrt_container \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/ros/ws
