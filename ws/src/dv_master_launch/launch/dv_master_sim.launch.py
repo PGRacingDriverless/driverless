@@ -75,6 +75,17 @@ def generate_launch_description():
         )
     )
 
+    # slam
+    # slam_launch_path = os.path.join(
+    #     get_package_share_directory("graphslam"),
+    #     "launch",
+    #     "graphslam.launch.py"
+    # )
+    # slam_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         slam_launch_path
+    #     )
+    # )
 
     # Control
     control_launch_path = os.path.join(
@@ -121,6 +132,7 @@ def generate_launch_description():
     launch_description.add_action(current_mission_arg)
     launch_description.add_action(cone_detection_launch)
     launch_description.add_action(path_planner_launch)
+    #launch_description.add_action(slam_launch)
     launch_description.add_action(control_launch)
     launch_description.add_action(launch_rviz_arg)
     #launch_description.add_action(rviz_node)
